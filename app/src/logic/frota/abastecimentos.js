@@ -74,14 +74,19 @@ export function calcularLinhas(abastecimentos) {
 
 // Estatísticas "Geral" (todo o histórico) vs "Últimos X" ciclos fechados —
 // mesmas duas colunas de estatística da planilha de referência.
+//
+// "Gasto" soma o valor de TODOS os abastecimentos da janela (mesmo o
+// primeiro, que só estabelece a linha de base e por isso não entra no
+// cálculo de consumo/custo por km) — dinheiro gasto é dinheiro gasto,
+// mesmo antes de dar pra medir o consumo daquele trecho.
 export function calcularEstatisticas(linhas, ultimosX = 5) {
-  const fechadas = (linhas || []).filter((l) => l.consumoKmL != null);
+  const todas = linhas || [];
+  const fechadas = todas.filter((l) => l.consumoKmL != null);
 
-  function resumo(lista) {
+  function resumo(lista, gasto) {
     if (!lista.length) return null;
     const distancia = lista.reduce((s, l) => s + (l.kmDoCiclo || 0), 0);
     const volume = lista.reduce((s, l) => s + (l.volDoCiclo || 0), 0);
-    const gasto = lista.reduce((s, l) => s + (l.valorDoCiclo || 0), 0);
     const consumos = lista.map((l) => l.consumoKmL);
     const custos = lista.map((l) => l.custoKm);
     const primeira = lista[0], ultima = lista[lista.length - 1];
@@ -95,7 +100,15 @@ export function calcularEstatisticas(linhas, ultimosX = 5) {
     };
   }
 
-  return { geral: resumo(fechadas), ultimos: resumo(fechadas.slice(-ultimosX)), ultimosX };
+  const gastoTotal = todas.reduce((s, l) => s + (l.valor || 0), 0);
+  const ultimasLinhas = todas.slice(-ultimosX);
+  const gastoUltimos = ultimasLinhas.reduce((s, l) => s + (l.valor || 0), 0);
+
+  return {
+    geral: resumo(fechadas, gastoTotal),
+    ultimos: resumo(fechadas.slice(-ultimosX), gastoUltimos),
+    ultimosX,
+  };
 }
 
 function media(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
