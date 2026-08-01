@@ -1,4 +1,4 @@
-// Service Worker do Aegrofin.
+// Service Worker do VZS Agro.
 // HTML/navegação = NETWORK-FIRST (quando online, sempre pega a versão nova → some o problema
 // de "ficou preso na versão antiga"). Demais arquivos (com hash no nome) = cache-first.
 const CACHE = "aegro-cache-v3";
