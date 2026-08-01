@@ -26,7 +26,7 @@ export default function VeiculoDetailScreen({ route, navigation }) {
     navigation.setOptions({
       title: veiculo.apelido || veiculo.placa || "Veículo",
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("CrudForm", { entidade: "veiculos", item: veiculo })} style={{ paddingHorizontal: 14 }}>
+        <TouchableOpacity onPress={() => navigation.navigate("VeiculoForm", { item: veiculo })} style={{ paddingHorizontal: 14 }}>
           <Text style={{ color: C.text, fontSize: 18 }}>✏️</Text>
         </TouchableOpacity>
       ),

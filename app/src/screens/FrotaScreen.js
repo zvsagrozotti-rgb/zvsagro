@@ -16,9 +16,14 @@ export default function FrotaScreen({ navigation }) {
     navigation.setOptions({
       title: "Frota",
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.navigate("CrudForm", { entidade: "veiculos" })} style={s.add}>
-          <Text style={s.addTxt}>＋</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity onPress={() => navigation.navigate("RelatorioAbastecimentos")} style={{ paddingHorizontal: 10 }}>
+            <Text style={{ fontSize: 20 }}>📊</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("VeiculoForm")} style={s.add}>
+            <Text style={s.addTxt}>＋</Text>
+          </TouchableOpacity>
+        </View>
       ),
     });
   }, [navigation]);

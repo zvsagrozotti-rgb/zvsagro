@@ -16,7 +16,9 @@ import CrudListScreen from "./src/screens/CrudListScreen";
 import CrudFormScreen from "./src/screens/CrudFormScreen";
 import FrotaScreen from "./src/screens/FrotaScreen";
 import VeiculoDetailScreen from "./src/screens/VeiculoDetailScreen";
+import VeiculoFormScreen from "./src/screens/VeiculoFormScreen";
 import AbastecimentoFormScreen from "./src/screens/AbastecimentoFormScreen";
+import RelatorioAbastecimentosScreen from "./src/screens/RelatorioAbastecimentosScreen";
 import MinhaEmpresaScreen from "./src/screens/MinhaEmpresaScreen";
 import MinhaEquipeScreen from "./src/screens/MinhaEquipeScreen";
 import AtividadeScreen from "./src/screens/AtividadeScreen";
@@ -167,7 +169,9 @@ export default function App() {
               <Stack.Screen name="CrudForm" component={CrudFormScreen} />
               <Stack.Screen name="Frota" component={FrotaScreen} options={{ title: "Frota" }} />
               <Stack.Screen name="VeiculoDetail" component={VeiculoDetailScreen} />
+              <Stack.Screen name="VeiculoForm" component={VeiculoFormScreen} />
               <Stack.Screen name="AbastecimentoForm" component={AbastecimentoFormScreen} />
+              <Stack.Screen name="RelatorioAbastecimentos" component={RelatorioAbastecimentosScreen} options={{ title: "Relatório de Abastecimentos" }} />
               <Stack.Screen name="MinhaEmpresa" component={MinhaEmpresaScreen} options={{ title: "Minha Empresa" }} />
               <Stack.Screen name="MinhaEquipe" component={MinhaEquipeScreen} options={{ title: "Minha Equipe" }} />
               <Stack.Screen name="Atividade" component={AtividadeScreen} options={{ title: "Atividade recente" }} />
