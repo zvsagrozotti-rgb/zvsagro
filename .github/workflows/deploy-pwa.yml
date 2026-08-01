@@ -1,0 +1,53 @@
+name: Deploy PWA
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "app/**"
+      - ".github/workflows/deploy-pwa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        working-directory: app
+        run: npm ci
+
+      # GitHub Pages de projeto serve em /<repo>/, não na raiz — os caminhos
+      # absolutos gerados pelo Expo (HTML e dentro do próprio bundle JS)
+      # precisam desse prefixo, senão tudo dá 404.
+      - name: Configurar caminho base pro GitHub Pages
+        working-directory: app
+        run: |
+          node -e "
+            const fs = require('fs');
+            const j = JSON.parse(fs.readFileSync('app.json'));
+            j.expo.experiments = { baseUrl: '/${{ github.event.repository.name }}' };
+            fs.writeFileSync('app.json', JSON.stringify(j, null, 2) + '\n');
+          "
+
+      - name: Gerar build web
+        working-directory: app
+        run: npx expo export --platform web
+
+      - name: Injetar tags de PWA (manifest, service worker, ícones)
+        working-directory: app
+        run: node pwa-inject.js dist
+
+      - name: Publicar no GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: app/dist
