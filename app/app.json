@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "AegroFin Online",
+    "slug": "aegrofin-online",
+    "version": "0.2.6",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.wftavares.aegrofinonline",
+      "versionCode": 26,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#000000",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-sharing",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "backgroundColor": "#16A34A",
+          "imageWidth": 240
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "O app usa sua localização para centralizar o mapa no talhão onde você está."
+        }
+      ]
+    ],
+    "owner": "wftavares",
+    "extra": {
+      "eas": {
+        "projectId": "14e911d7-8f7e-428a-8e14-6f8b3819a845"
+      }
+    }
+  }
+}

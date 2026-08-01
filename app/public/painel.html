@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel — Aegro</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: #0B1D13; color: #E7F3EA;
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .wrap { width: 100%; max-width: 480px; }
+  h1 { font-size: 18px; font-weight: 800; margin: 0 0 4px; }
+  .sub { color: #7FA98A; font-size: 13px; margin: 0 0 24px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card {
+    background: #12271A; border: 1px solid #1E3B27; border-radius: 12px;
+    padding: 16px; text-align: center;
+  }
+  .card .n { font-size: 28px; font-weight: 800; color: #6FE39A; line-height: 1.1; }
+  .card .l { font-size: 12px; color: #9CBBA6; margin-top: 6px; }
+  .msg { text-align: center; color: #9CBBA6; padding: 40px 0; font-size: 14px; }
+  .err { text-align: center; color: #E39A9A; padding: 40px 0; font-size: 14px; }
+  .att { text-align: center; color: #557A63; font-size: 11px; margin-top: 20px; }
+  h2 { font-size: 13px; font-weight: 800; color: #9CBBA6; text-transform: uppercase; letter-spacing: .04em; margin: 28px 0 10px; }
+  .lista { background: #12271A; border: 1px solid #1E3B27; border-radius: 12px; overflow: hidden; }
+  .conta { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid #1E3B27; }
+  .conta:last-child { border-bottom: none; }
+  .conta .email { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .conta .quando { font-size: 11px; color: #7FA98A; white-space: nowrap; }
+  .conta .tag { font-size: 10px; padding: 1px 6px; border-radius: 5px; margin-left: 6px; }
+  .tag.ok { background: #163B24; color: #6FE39A; }
+  .tag.no { background: #3B1616; color: #E39A9A; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Meus apps</h1>
+    <p class="sub">Acessos e cadastros de teste</p>
+    <div id="conteudo"><div class="msg">Carregando…</div></div>
+    <div id="porApp"></div>
+    <div id="acessos"></div>
+    <div id="contas"></div>
+    <p class="att" id="att"></p>
+  </div>
+
+<script>
+(function () {
+  var SUPABASE_URL = "https://puxpynqrjcrhvcbuouiv.supabase.co";
+  var ANON_KEY = "sb_publishable_SWDKlAGLefiorQbcz13Vjw_G7SWS3_T";
+  var params = new URLSearchParams(location.search);
+  var chave = params.get("key") || "";
+  var conteudo = document.getElementById("conteudo");
+  var contasEl = document.getElementById("contas");
+  var acessosEl = document.getElementById("acessos");
+  var porAppEl = document.getElementById("porApp");
+  var att = document.getElementById("att");
+
+  var NOMES_APP = { "aegrofin-online": "AegroFin Online", "aegrofin": "AegroFin", "aegroprecisao": "AegroPrecisão" };
+  function nomeApp(a) { return NOMES_APP[a] || a; }
+
+  if (!chave) {
+    conteudo.innerHTML = '<div class="err">Falta a chave de acesso no link.</div>';
+    return;
+  }
+
+  fetch(SUPABASE_URL + "/rest/v1/rpc/estatisticas_pwa", {
+    method: "POST",
+    headers: { apikey: ANON_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_chave: chave })
+  })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+    .then(function (d) {
+      conteudo.innerHTML =
+        '<div class="grid">' +
+          card(d.total_visitas, "Acessos (todos os apps)") +
+          card(d.visitas_7d, "Acessos (7 dias)") +
+          card(d.total_contas, "Contas criadas (total)") +
+          card(d.contas_7d, "Contas criadas (7 dias)") +
+          card(d.total_empresas, "Empresas cadastradas") +
+          card(d.visitas_hoje, "Acessos hoje") +
+        '</div>';
+      att.textContent = "Atualizado agora — recarregue a página pra ver de novo.";
+    })
+    .catch(function () {
+      conteudo.innerHTML = '<div class="err">Chave inválida ou erro ao carregar os dados.</div>';
+    });
+
+  fetch(SUPABASE_URL + "/rest/v1/rpc/visitas_por_app_pwa", {
+    method: "POST",
+    headers: { apikey: ANON_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_chave: chave })
+  })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+    .then(function (lista) {
+      if (!lista || lista.length === 0) return;
+      porAppEl.innerHTML =
+        '<h2>Acessos por aplicativo</h2><div class="lista">' +
+        lista.map(function (a) {
+          return '<div class="conta"><span class="email">' + esc(nomeApp(a.app)) + '</span><span class="quando">' + a.total + ' total · ' + a.ultimos_7d + ' (7d) · ' + a.hoje + ' hoje</span></div>';
+        }).join("") +
+        '</div>';
+    })
+    .catch(function () {});
+
+  fetch(SUPABASE_URL + "/rest/v1/rpc/visitas_recentes_pwa", {
+    method: "POST",
+    headers: { apikey: ANON_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_chave: chave })
+  })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+    .then(function (lista) {
+      if (!lista || lista.length === 0) return;
+      acessosEl.innerHTML =
+        '<h2>Acessos recentes</h2><div class="lista">' +
+        lista.map(function (v) {
+          var quando = new Date(v.criado_em).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+          var onde = [v.cidade, v.regiao, v.pais].filter(Boolean).join(", ") || "local desconhecido";
+          return '<div class="conta"><span class="email">' + esc(nomeApp(v.app)) + ' — ' + esc(onde) + '</span><span class="quando">' + quando + '</span></div>';
+        }).join("") +
+        '</div>';
+    })
+    .catch(function () {});
+
+  fetch(SUPABASE_URL + "/rest/v1/rpc/contas_pwa", {
+    method: "POST",
+    headers: { apikey: ANON_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_chave: chave })
+  })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r); })
+    .then(function (lista) {
+      if (!lista || lista.length === 0) return;
+      contasEl.innerHTML =
+        '<h2>Contas criadas</h2><div class="lista">' +
+        lista.map(function (c) {
+          var quando = new Date(c.criado_em).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+          var tag = c.confirmado ? '<span class="tag ok">confirmada</span>' : '<span class="tag no">pendente</span>';
+          return '<div class="conta"><span class="email">' + esc(c.email) + tag + '</span><span class="quando">' + quando + '</span></div>';
+        }).join("") +
+        '</div>';
+    })
+    .catch(function () {});
+
+  function card(n, label) {
+    return '<div class="card"><div class="n">' + (n == null ? "—" : n) + '</div><div class="l">' + label + '</div></div>';
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+})();
+</script>
+</body>
+</html>
