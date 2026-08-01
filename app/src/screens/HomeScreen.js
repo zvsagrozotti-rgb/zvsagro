@@ -7,7 +7,7 @@ import { C } from "../theme";
 
 const ITENS = [
   { icon: "⛽", titulo: "Frota", sub: "Veículos, abastecimentos e consumo", tela: "Frota", ok: true },
-  { icon: "📋", titulo: "Cadastros", sub: "Clientes e fornecedores", tela: "Cadastros", ok: true },
+  { icon: "📋", titulo: "Cadastros", sub: "Pessoas (clientes e fornecedores)", tela: "Cadastros", ok: true },
   { icon: "🏢", titulo: "Minha Empresa", sub: "Logo, CNPJ, contato", tela: "MinhaEmpresa", ok: true },
   { icon: "💵", titulo: "Financeiro", sub: "Contas, receitas, despesas, cartões…", tela: "Financeiro", ok: true },
 ];

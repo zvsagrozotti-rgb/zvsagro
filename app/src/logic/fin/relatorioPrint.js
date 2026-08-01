@@ -69,7 +69,7 @@ function montarHtml({ itens, inicio, fim, status, totalReceitas, totalDespesas, 
 
   <h2>Lançamentos (${itens.length})</h2>
   <table>
-    <tr><th>Descrição</th><th>Centro de custo</th><th>Cliente/Fornecedor</th><th>Vencimento</th><th>Status</th><th class="r">Valor</th></tr>
+    <tr><th>Descrição</th><th>Centro de custo</th><th>Pessoa</th><th>Vencimento</th><th>Status</th><th class="r">Valor</th></tr>
     ${linhas}
   </table>
 

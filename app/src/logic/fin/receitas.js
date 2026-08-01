@@ -14,7 +14,7 @@ export async function listarReceitas({ mes, ano, status } = {}) {
   items.sort((a, b) => String(b.data_vencimento).localeCompare(String(a.data_vencimento)));
 
   // Nome da conta, categoria e cliente pro detalhe/lista mostrarem, não só o id.
-  // Cliente vem do cadastro agrícola "Clientes e Fornecedores" (entidade "clientes").
+  // Cliente vem do cadastro "Pessoas" (entidade "clientes").
   const [contas, categorias, clientes] = await Promise.all([listarContas(), listarCategorias(), listarAgro("clientes")]);
   const contaNome = Object.fromEntries(contas.map(c => [c.id, c.nome]));
   const categoriaNome = Object.fromEntries(categorias.map(c => [c.id, c.nome]));

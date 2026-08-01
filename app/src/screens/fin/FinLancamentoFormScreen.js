@@ -38,7 +38,7 @@ export default function FinLancamentoFormScreen({ route, navigation }) {
   const [busy, setBusy] = useState(false);
 
   // Em receita mostra quem paga (Cliente); em despesa mostra quem recebe (Fornecedor) —
-  // mesmo cadastro (Clientes e Fornecedores), filtrado pela flag "tipo" de cada um.
+  // mesmo cadastro (Pessoas), filtrado pela flag "tipo" de cada um.
   // Cadastro sem a flag definida (registro antigo) aparece nos dois, pra não sumir da lista.
   const labelParceiro = tipo === "receita" ? "Cliente" : "Fornecedor";
   const tipoParceiro = tipo === "receita" ? "Cliente" : "Fornecedor";
@@ -138,7 +138,7 @@ export default function FinLancamentoFormScreen({ route, navigation }) {
         itens={clientes.map(c => ({ id: c.id, label: c.nome, sub: c.cidade || "", _o: c }))}
         onSelect={(it) => { setCliente(it._o); setPick(null); }}
         onClose={() => setPick(null)}
-        vazioMsg={"Nenhum " + labelParceiro.toLowerCase() + " cadastrado em Clientes e Fornecedores."} />
+        vazioMsg={"Nenhum " + labelParceiro.toLowerCase() + " cadastrado em Pessoas."} />
       <View style={{ height: 30 }} />
     </ScrollView>
   );

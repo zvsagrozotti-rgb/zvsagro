@@ -15,7 +15,7 @@ export const ENTIDADES = {
     ],
   },
   clientes: {
-    titulo: "Clientes e Fornecedores", singular: "Cliente/Fornecedor", icon: "🧑‍🌾", label: (i) => i.nome,
+    titulo: "Pessoas", singular: "Pessoa", icon: "🧑‍🌾", label: (i) => i.nome,
     sub: (i) => [i.tipo || "Cliente", i.documento, i.cidade, i.contato].filter(Boolean).join(" · "),
     campos: [
       { key: "nome", label: "Nome", tipo: "text", req: true },
