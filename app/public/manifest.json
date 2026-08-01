@@ -1,7 +1,7 @@
 {
-  "name": "Aegrofin",
-  "short_name": "Aegrofin",
-  "description": "Gestão de pulverização com drones + financeiro completo (contas, receitas, despesas, cartões). Funciona offline.",
+  "name": "VZS Agro",
+  "short_name": "VZS Agro",
+  "description": "Controle de frota e combustível + financeiro completo (contas, receitas, despesas, cartões). Funciona offline.",
   "lang": "pt-BR",
   "start_url": ".",
   "scope": ".",

@@ -9,9 +9,9 @@ import { avisar } from "../logic/confirm";
 import { C } from "../theme";
 
 const CAMPOS = [
-  { key: "nome", label: "Nome da empresa", ph: "Ex.: Aegrofin Serviços Aéreos" },
-  { key: "slogan", label: "Slogan", ph: "Ex.: Precisão que rende" },
-  { key: "agronomo", label: "Responsável técnico (agrônomo)", ph: "Nome + CREA" },
+  { key: "nome", label: "Nome da empresa", ph: "Ex.: VZS Agro Soluções Integradas" },
+  { key: "slogan", label: "Slogan", ph: "Ex.: Soluções Integradas" },
+  { key: "agronomo", label: "Responsável", ph: "Nome do responsável" },
   { key: "documento", label: "CPF / CNPJ", ph: "00.000.000/0000-00" },
   { key: "telefone", label: "Telefone", ph: "(00) 00000-0000" },
   { key: "email", label: "E-mail", ph: "contato@empresa.com" },

@@ -5,26 +5,18 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { C } from "./src/theme";
-import { seedProdutosPadrao } from "./src/logic/seedProdutos";
 import { sessaoAtual, aoMudarSessao, sair as sairOnline } from "./src/logic/authOnline";
 import { iniciarAutoSync } from "./src/logic/store";
 import { lerEmpresa } from "./src/logic/empresa";
-import { migrarArmazenamentoAntigo } from "./src/logic/migrarAntigo";
 import { AppCtx } from "./src/logic/appctx";
 import SyncBadge from "./src/components/SyncBadge";
 import HomeScreen from "./src/screens/HomeScreen";
-import CalculadoraScreen from "./src/screens/CalculadoraScreen";
 import CadastrosScreen from "./src/screens/CadastrosScreen";
-import CatalogoScreen from "./src/screens/CatalogoScreen";
 import CrudListScreen from "./src/screens/CrudListScreen";
 import CrudFormScreen from "./src/screens/CrudFormScreen";
-import SalvarAplicacaoScreen from "./src/screens/SalvarAplicacaoScreen";
-import AplicacoesScreen from "./src/screens/AplicacoesScreen";
-import AplicacaoDetailScreen from "./src/screens/AplicacaoDetailScreen";
-import RelatorioGeralScreen from "./src/screens/RelatorioGeralScreen";
-import MapaScreen from "./src/screens/MapaScreen";
-import CondicoesVooScreen from "./src/screens/CondicoesVooScreen";
-import SalvarTalhaoScreen from "./src/screens/SalvarTalhaoScreen";
+import FrotaScreen from "./src/screens/FrotaScreen";
+import VeiculoDetailScreen from "./src/screens/VeiculoDetailScreen";
+import AbastecimentoFormScreen from "./src/screens/AbastecimentoFormScreen";
 import MinhaEmpresaScreen from "./src/screens/MinhaEmpresaScreen";
 import MinhaEquipeScreen from "./src/screens/MinhaEquipeScreen";
 import AtividadeScreen from "./src/screens/AtividadeScreen";
@@ -47,13 +39,6 @@ import FinLancamentoFormScreen from "./src/screens/fin/FinLancamentoFormScreen";
 import FinLancamentoDetailScreen from "./src/screens/fin/FinLancamentoDetailScreen";
 import FinTransferenciasScreen from "./src/screens/fin/FinTransferenciasScreen";
 import FinRelatorioScreen from "./src/screens/fin/FinRelatorioScreen";
-import EstoqueScreen from "./src/screens/EstoqueScreen";
-import EstoqueProdutoDetalheScreen from "./src/screens/EstoqueProdutoDetalheScreen";
-import EstoqueMovimentoFormScreen from "./src/screens/EstoqueMovimentoFormScreen";
-import EstoqueRelatorioScreen from "./src/screens/EstoqueRelatorioScreen";
-import FaturamentoScreen from "./src/screens/FaturamentoScreen";
-import CompraFormScreen from "./src/screens/CompraFormScreen";
-import VendaFormScreen from "./src/screens/VendaFormScreen";
 
 const Stack = createNativeStackNavigator();
 const APP_ICON = require("./assets/icon.png");
@@ -119,7 +104,6 @@ export default function App() {
   const [recuperandoSenha, setRecuperandoSenha] = useState(false);
 
   const recarregar = useCallback(async () => {
-    await migrarArmazenamentoAntigo();
     const [sessao, e] = await Promise.all([sessaoAtual(), lerEmpresa()]);
     setLogged(!!sessao); setEmpresa(e); setPronto(true);
   }, []);
@@ -127,7 +111,6 @@ export default function App() {
   const sair = useCallback(async () => { await sairOnline(); await recarregar(); }, [recarregar]);
 
   useEffect(() => {
-    seedProdutosPadrao();
     recarregar();
     iniciarAutoSync();
     // Reage sozinho a login/logout — inclusive se o token expirar/renovar em
@@ -179,30 +162,17 @@ export default function App() {
                     </TouchableOpacity>
                   ),
                 })} />
-              <Stack.Screen name="Calculadora" component={CalculadoraScreen} options={{ title: "Calculadora de Calda" }} />
               <Stack.Screen name="Cadastros" component={CadastrosScreen} options={{ title: "Cadastros" }} />
-              <Stack.Screen name="Catalogo" component={CatalogoScreen} options={{ title: "Catálogo de Produtos" }} />
               <Stack.Screen name="CrudList" component={CrudListScreen} />
               <Stack.Screen name="CrudForm" component={CrudFormScreen} />
-              <Stack.Screen name="SalvarAplicacao" component={SalvarAplicacaoScreen} options={{ title: "Salvar aplicação" }} />
-              <Stack.Screen name="Aplicacoes" component={AplicacoesScreen} options={{ title: "Aplicações" }} />
-              <Stack.Screen name="AplicacaoDetail" component={AplicacaoDetailScreen} options={{ title: "Aplicação" }} />
-              <Stack.Screen name="RelatorioGeral" component={RelatorioGeralScreen} options={{ title: "Relatório Geral" }} />
-              <Stack.Screen name="Mapa" component={MapaScreen} options={{ title: "Mapa do Talhão" }} />
-              <Stack.Screen name="CondicoesVoo" component={CondicoesVooScreen} options={{ title: "Condições pra Voo" }} />
-              <Stack.Screen name="SalvarTalhao" component={SalvarTalhaoScreen} options={{ title: "Salvar talhão" }} />
+              <Stack.Screen name="Frota" component={FrotaScreen} options={{ title: "Frota" }} />
+              <Stack.Screen name="VeiculoDetail" component={VeiculoDetailScreen} />
+              <Stack.Screen name="AbastecimentoForm" component={AbastecimentoFormScreen} />
               <Stack.Screen name="MinhaEmpresa" component={MinhaEmpresaScreen} options={{ title: "Minha Empresa" }} />
               <Stack.Screen name="MinhaEquipe" component={MinhaEquipeScreen} options={{ title: "Minha Equipe" }} />
               <Stack.Screen name="Atividade" component={AtividadeScreen} options={{ title: "Atividade recente" }} />
               <Stack.Screen name="Conta" component={ContaScreen} options={{ title: "Conta" }} />
               <Stack.Screen name="EmBreve" component={EmBreveScreen} />
-              <Stack.Screen name="Faturamento" component={FaturamentoScreen} options={{ title: "Faturamento" }} />
-              <Stack.Screen name="Compra" component={CompraFormScreen} options={{ title: "Nova compra" }} />
-              <Stack.Screen name="Venda" component={VendaFormScreen} options={{ title: "Nova venda" }} />
-              <Stack.Screen name="Estoque" component={EstoqueScreen} />
-              <Stack.Screen name="EstoqueProduto" component={EstoqueProdutoDetalheScreen} />
-              <Stack.Screen name="EstoqueMovimento" component={EstoqueMovimentoFormScreen} options={{ title: "Movimento de estoque" }} />
-              <Stack.Screen name="EstoqueRelatorio" component={EstoqueRelatorioScreen} options={{ title: "Relatório de Estoque" }} />
               <Stack.Screen name="Financeiro" component={FinanceiroScreen} options={(p) => finHeaderOptions(p, "Financeiro")} />
               <Stack.Screen name="FinDashboard" component={FinDashboardScreen} options={(p) => finHeaderOptions(p, "Painel financeiro")} />
               <Stack.Screen name="FinContas" component={FinContasScreen} options={(p) => finHeaderOptions(p, "Contas")} />

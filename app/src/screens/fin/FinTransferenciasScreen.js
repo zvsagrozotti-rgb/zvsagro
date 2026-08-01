@@ -3,7 +3,7 @@ import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 
 import { useFocusEffect } from "@react-navigation/native";
 import { listarTransferencias, criarTransferencia } from "../../logic/fin/transferencias";
 import { listarContasSelecionaveis } from "../../logic/fin/contas";
-import { fmtMoeda } from "../../logic/calc";
+import { fmtMoeda } from "../../logic/fmt";
 import { avisar } from "../../logic/confirm";
 import PickerModal from "../../components/PickerModal";
 import { FC as C, FCStyles as CS } from "../../logic/fin/finTheme";

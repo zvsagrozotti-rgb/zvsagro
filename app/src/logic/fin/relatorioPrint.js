@@ -4,7 +4,7 @@
 import { Platform } from "react-native";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
-import { fmtMoeda } from "../calc";
+import { fmtMoeda } from "../fmt";
 import { lerEmpresa } from "../empresa";
 
 function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
@@ -73,7 +73,7 @@ function montarHtml({ itens, inicio, fim, status, totalReceitas, totalDespesas, 
     ${linhas}
   </table>
 
-  <div class="foot">Relatório gerado pelo AegroFin · ${dataBR(new Date().toISOString().split("T")[0])}</div>
+  <div class="foot">Relatório gerado pelo VZS Agro · ${dataBR(new Date().toISOString().split("T")[0])}</div>
 </body></html>`;
 }
 

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { obterDashboard } from "../../logic/fin/dashboard";
-import { fmtMoeda } from "../../logic/calc";
+import { fmtMoeda } from "../../logic/fmt";
 import { FC as C, FCStyles as CS } from "../../logic/fin/finTheme";
 
 function dataBR(iso) {

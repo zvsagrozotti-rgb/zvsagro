@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { entrar as entrarOnline, cadastrar, recuperarSenha } from "../logic/authOnline";
-import MarcaAegroFin from "../components/MarcaAegroFin";
+import MarcaVZSAgro from "../components/MarcaVZSAgro";
 import { C } from "../theme";
 
 const APP_ICON = require("../../assets/icon.png");
@@ -42,7 +42,7 @@ export default function LoginScreen({ empresa }) {
       <View style={s.box}>
         {logo ? <Image source={{ uri: logo }} style={s.logo} resizeMode="contain" />
               : <Image source={APP_ICON} style={s.appIcon} resizeMode="contain" />}
-        {empresa && empresa.nome ? <Text style={s.nome}>{empresa.nome}</Text> : <MarcaAegroFin style={s.nome} />}
+        {empresa && empresa.nome ? <Text style={s.nome}>{empresa.nome}</Text> : <MarcaVZSAgro style={s.nome} />}
         <Text style={s.sub}>{modo === "entrar" ? "Acesse com seu e-mail e senha" : "Crie sua conta"}</Text>
 
         <Text style={s.label}>E-mail</Text>

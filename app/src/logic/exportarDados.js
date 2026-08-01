@@ -5,7 +5,7 @@ import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import { listar } from "./store";
 
-const ENTIDADES_LISTA = ["clientes", "fazendas", "talhoes", "produtos", "drones", "pilotos", "aplicacoes"];
+const ENTIDADES_LISTA = ["clientes", "veiculos", "abastecimentos"];
 
 function hojeArquivo() {
   const d = new Date();
@@ -22,9 +22,9 @@ export async function exportarMeusDados() {
     total += (itens || []).length;
   }
 
-  const pacote = { app: "AegroFin Online", tipo: "backup", versao: 1, em: new Date().toISOString(), dados };
+  const pacote = { app: "VZS Agro", tipo: "backup", versao: 1, em: new Date().toISOString(), dados };
   const json = JSON.stringify(pacote);
-  const nome = "aegrofin-online-backup-" + hojeArquivo() + ".json";
+  const nome = "vzsagro-backup-" + hojeArquivo() + ".json";
 
   if (Platform.OS === "web") {
     const blob = new Blob([json], { type: "application/json" });
@@ -36,7 +36,7 @@ export async function exportarMeusDados() {
     const path = FileSystem.cacheDirectory + nome;
     await FileSystem.writeAsStringAsync(path, json, { encoding: FileSystem.EncodingType.UTF8 });
     if (await Sharing.isAvailableAsync()) {
-      try { await Sharing.shareAsync(path, { mimeType: "*/*", dialogTitle: "Backup AegroFin Online" }); }
+      try { await Sharing.shareAsync(path, { mimeType: "*/*", dialogTitle: "Backup VZS Agro" }); }
       catch (e) { /* arquivo já está salvo, só o compartilhar falhou */ }
     }
   }

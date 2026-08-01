@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { obterDashboard } from "../../logic/fin/dashboard";
-import { fmtMoeda } from "../../logic/calc";
+import { fmtMoeda } from "../../logic/fmt";
 import { lerEmpresa } from "../../logic/empresa";
 import { FC as C } from "../../logic/fin/finTheme";
 import FinTabBar from "../../components/fin/FinTabBar";

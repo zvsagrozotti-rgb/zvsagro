@@ -4,7 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { listarReceitas, baixarReceita, estornarReceita, cancelarReceita, excluirReceita } from "../../logic/fin/receitas";
 import { listarDespesas, baixarDespesa, estornarDespesa, cancelarDespesa, excluirDespesa } from "../../logic/fin/despesas";
 import { listarContasSelecionaveis } from "../../logic/fin/contas";
-import { fmtMoeda } from "../../logic/calc";
+import { fmtMoeda } from "../../logic/fmt";
 import { avisar, confirmar } from "../../logic/confirm";
 import PickerModal from "../../components/PickerModal";
 import { FC as C } from "../../logic/fin/finTheme";

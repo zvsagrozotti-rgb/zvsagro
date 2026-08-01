@@ -3,7 +3,7 @@ import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet } from 
 import { useFocusEffect } from "@react-navigation/native";
 import { listarReceitas } from "../../logic/fin/receitas";
 import { listarDespesas } from "../../logic/fin/despesas";
-import { fmtMoeda } from "../../logic/calc";
+import { fmtMoeda } from "../../logic/fmt";
 import { avisar } from "../../logic/confirm";
 import { FC as C, FCStyles as CS } from "../../logic/fin/finTheme";
 import FinTabBar from "../../components/fin/FinTabBar";

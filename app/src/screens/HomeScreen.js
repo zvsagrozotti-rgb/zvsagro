@@ -6,15 +6,10 @@ import { precisaBackup } from "../logic/backup";
 import { C } from "../theme";
 
 const ITENS = [
-  { icon: "🧪", titulo: "Calculadora de Calda", sub: "Calda + Delta T + vazão", tela: "Calculadora", ok: true },
-  { icon: "📋", titulo: "Cadastros", sub: "Clientes, fazendas, talhões, produtos…", tela: "Cadastros", ok: true },
-  { icon: "🧪", titulo: "Catálogo de Produtos", sub: "Base AGROFIT/MAPA · 4.359 produtos", tela: "Catalogo", ok: true },
-  { icon: "🛩️", titulo: "Aplicações", sub: "Registros salvos por cliente", tela: "Aplicacoes", ok: true },
-  { icon: "🗺️", titulo: "Mapa do Talhão", sub: "Desenhar área · hectares", tela: "Mapa", ok: true },
-  { icon: "🌦️", titulo: "Condições pra Voo", sub: "Clima, vento e índice Kp", tela: "CondicoesVoo", ok: true },
-  { icon: "🏢", titulo: "Minha Empresa", sub: "Logo, agrônomo, CNPJ, contato", tela: "MinhaEmpresa", ok: true },
+  { icon: "⛽", titulo: "Frota", sub: "Veículos, abastecimentos e consumo", tela: "Frota", ok: true },
+  { icon: "📋", titulo: "Cadastros", sub: "Clientes e fornecedores", tela: "Cadastros", ok: true },
+  { icon: "🏢", titulo: "Minha Empresa", sub: "Logo, CNPJ, contato", tela: "MinhaEmpresa", ok: true },
   { icon: "💵", titulo: "Financeiro", sub: "Contas, receitas, despesas, cartões…", tela: "Financeiro", ok: true },
-  { icon: "🧾", titulo: "Faturamento", sub: "Compra, venda e estoque", tela: "Faturamento", ok: true },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -57,7 +52,7 @@ export default function HomeScreen({ navigation }) {
         ))}
       </View>
 
-      <Text style={s.foot}>AegroFin · Levando tecnologia ao homem do campo{"\n"}Todos os direitos reservados.</Text>
+      <Text style={s.foot}>VZS Agro · Soluções Integradas{"\n"}Todos os direitos reservados.</Text>
     </ScrollView>
   );
 }
