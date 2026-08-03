@@ -57,7 +57,7 @@ export default function VeiculoDetailScreen({ route, navigation }) {
         }
         ListEmptyComponent={<Text style={s.vazio}>Nenhum abastecimento registrado.{"\n"}Toque em ＋ para adicionar.</Text>}
         renderItem={({ item }) => (
-          <TouchableOpacity style={s.row} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, item })}>
+          <TouchableOpacity style={s.row} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa, item })}>
             <View style={{ flex: 1 }}>
               <Text style={s.rowData}>{dataBR(item.data)} · {fmt(item.odometro, 0)} km</Text>
               <Text style={s.rowSub}>
@@ -74,7 +74,7 @@ export default function VeiculoDetailScreen({ route, navigation }) {
           </TouchableOpacity>
         )}
       />
-      <TouchableOpacity style={s.fab} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id })}>
+      <TouchableOpacity style={s.fab} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa })}>
         <Text style={s.fabTxt}>＋ Abastecimento</Text>
       </TouchableOpacity>
     </View>

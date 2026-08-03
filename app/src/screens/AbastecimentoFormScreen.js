@@ -1,6 +1,8 @@
 import React, { useState, useLayoutEffect } from "react";
 import { ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { salvarAbastecimento, removerAbastecimento } from "../logic/frota/abastecimentos";
+import { gerarContaAPagar } from "../logic/frota/financeiro";
+import { num } from "../logic/fmt";
 import { confirmar, avisar } from "../logic/confirm";
 import { C } from "../theme";
 
@@ -10,7 +12,7 @@ function hoje() {
 }
 
 export default function AbastecimentoFormScreen({ route, navigation }) {
-  const { veiculoId, item } = route.params;
+  const { veiculoId, veiculoNome, item } = route.params;
   const [data, setData] = useState(item?.data || hoje());
   const [odometro, setOdometro] = useState(item ? String(item.odometro ?? "") : "");
   const [volume, setVolume] = useState(item ? String(item.volume ?? "") : "");
@@ -25,11 +27,24 @@ export default function AbastecimentoFormScreen({ route, navigation }) {
     if (!odometro.trim()) { avisar("Atenção", "Informe o odômetro."); return; }
     if (!volume.trim()) { avisar("Atenção", "Informe o volume abastecido."); return; }
     try {
-      await salvarAbastecimento(veiculoId, {
+      const salvo = await salvarAbastecimento(veiculoId, {
         ...(item || {}),
         data, odometro: odometro.replace(",", "."), volume: volume.replace(",", "."),
         precoLitro: precoLitro.replace(",", "."), completou,
       });
+
+      // Só gera conta a pagar em abastecimento NOVO (não em edição), pra não
+      // duplicar lançamento no Financeiro a cada vez que alguém corrige algo.
+      if (!item) {
+        try {
+          const valor = num(salvo.volume) * num(salvo.precoLitro);
+          const despesaId = await gerarContaAPagar({ abastecimentoId: salvo.id, veiculoNome, data: salvo.data, valor });
+          if (despesaId) await salvarAbastecimento(veiculoId, { ...salvo, despesaId });
+        } catch (e) {
+          avisar("Abastecimento salvo", "Mas não consegui gerar a conta a pagar no Financeiro: " + e.message);
+        }
+      }
+
       navigation.goBack();
     } catch (e) { avisar("Erro", e.message || "Não foi possível salvar."); }
   }
