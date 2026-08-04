@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useLayoutEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { listar, assinar } from "../logic/store";
 import { calcularLinhas } from "../logic/frota/abastecimentos";
+import { imprimirRelatorioAbastecimentos } from "../logic/frota/relatorioPrint";
+import { avisar } from "../logic/confirm";
 import { fmt, fmtMoeda } from "../logic/fmt";
 import { C } from "../theme";
 
@@ -76,11 +78,12 @@ function GrupoBarras({ titulo, sufixo, itens, cor }) {
   );
 }
 
-export default function RelatorioAbastecimentosScreen() {
+export default function RelatorioAbastecimentosScreen({ navigation }) {
   const [linhas, setLinhas] = useState([]);
   const [granularidade, setGranularidade] = useState("mes");
   const [valor, setValor] = useState(valorPadrao("mes"));
   const [todos, setTodos] = useState(true);
+  const [imprimindo, setImprimindo] = useState(false);
 
   const carregar = useCallback(async () => {
     const [veiculos, abastecimentos] = await Promise.all([listar("veiculos"), listar("abastecimentos")]);
@@ -133,6 +136,31 @@ export default function RelatorioAbastecimentosScreen() {
     setValor(valorPadrao(key));
     setTodos(false);
   }
+
+  const periodoLabel = todos ? "Todo o histórico" : formatarValor(granularidade, valor) + " (" + gConfig.label + ")";
+
+  async function imprimir() {
+    setImprimindo(true);
+    try {
+      await imprimirRelatorioAbastecimentos({
+        periodoLabel, linhas: filtradas, veiculosComparados,
+        consumoMedio, distanciaTotal, gastoTotal, qtd: filtradas.length,
+      });
+    } catch (e) {
+      avisar("Erro", "Não foi possível gerar o relatório: " + e.message);
+    }
+    setImprimindo(false);
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={imprimir} disabled={imprimindo} style={{ paddingHorizontal: 14 }}>
+          <Text style={{ fontSize: 18 }}>{imprimindo ? "…" : "🖨️"}</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, imprimindo, periodoLabel, filtradas, veiculosComparados, consumoMedio, distanciaTotal, gastoTotal]);
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
