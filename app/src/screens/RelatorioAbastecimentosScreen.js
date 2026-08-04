@@ -22,6 +22,7 @@ function dataBR(iso) {
 }
 
 const GRANULARIDADES = [
+  { key: "todos", label: "Tudo" },
   { key: "dia", label: "Dia", tamanho: 10 },
   { key: "mes", label: "Mês", tamanho: 7 },
   { key: "ano", label: "Ano", tamanho: 4 },
@@ -80,10 +81,10 @@ function GrupoBarras({ titulo, sufixo, itens, cor }) {
 
 export default function RelatorioAbastecimentosScreen({ navigation }) {
   const [linhas, setLinhas] = useState([]);
-  const [granularidade, setGranularidade] = useState("mes");
+  const [granularidade, setGranularidade] = useState("todos");
   const [valor, setValor] = useState(valorPadrao("mes"));
-  const [todos, setTodos] = useState(true);
   const [imprimindo, setImprimindo] = useState(false);
+  const todos = granularidade === "todos";
 
   const carregar = useCallback(async () => {
     const [veiculos, abastecimentos] = await Promise.all([listar("veiculos"), listar("abastecimentos")]);
@@ -133,8 +134,7 @@ export default function RelatorioAbastecimentosScreen({ navigation }) {
 
   function mudarGranularidade(key) {
     setGranularidade(key);
-    setValor(valorPadrao(key));
-    setTodos(false);
+    if (key !== "todos") setValor(valorPadrao(key));
   }
 
   const periodoLabel = todos ? "Todo o histórico" : formatarValor(granularidade, valor) + " (" + gConfig.label + ")";
@@ -172,18 +172,17 @@ export default function RelatorioAbastecimentosScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </View>
-        <View style={s.nav}>
-          <TouchableOpacity onPress={() => setValor((v) => mover(granularidade, v, -1))} style={s.seta} disabled={todos}>
-            <Text style={[s.setaTxt, todos && s.setaDesativada]}>‹</Text>
-          </TouchableOpacity>
-          <Text style={[s.navTitulo, todos && s.setaDesativada]}>{todos ? "Todo o histórico" : formatarValor(granularidade, valor)}</Text>
-          <TouchableOpacity onPress={() => setValor((v) => mover(granularidade, v, 1))} style={s.seta} disabled={todos}>
-            <Text style={[s.setaTxt, todos && s.setaDesativada]}>›</Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={s.pill} onPress={() => setTodos((v) => !v)}>
-          <Text style={s.pillTxt}>{todos ? "Filtrar por " + gConfig.label.toLowerCase() : "Ver todo o histórico"}</Text>
-        </TouchableOpacity>
+        {!todos ? (
+          <View style={s.nav}>
+            <TouchableOpacity onPress={() => setValor((v) => mover(granularidade, v, -1))} style={s.seta}>
+              <Text style={s.setaTxt}>‹</Text>
+            </TouchableOpacity>
+            <Text style={s.navTitulo}>{formatarValor(granularidade, valor)}</Text>
+            <TouchableOpacity onPress={() => setValor((v) => mover(granularidade, v, 1))} style={s.seta}>
+              <Text style={s.setaTxt}>›</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
       </View>
 
       <FlatList
@@ -241,9 +240,6 @@ const s = StyleSheet.create({
   seta: { paddingHorizontal: 14, paddingVertical: 10 },
   setaTxt: { color: C.blue, fontSize: 22, fontWeight: "800" },
   navTitulo: { color: C.text, fontSize: 15, fontWeight: "800" },
-  setaDesativada: { opacity: 0.35 },
-  pill: { alignSelf: "center", borderColor: C.line, borderWidth: 1.5, borderRadius: 99, paddingHorizontal: 16, paddingVertical: 7, marginTop: 10 },
-  pillTxt: { color: C.blue, fontSize: 12, fontWeight: "700" },
   resumo: { flexDirection: "row", flexWrap: "wrap", padding: 16, paddingBottom: 0, gap: 10 },
   resumoItem: { flexGrow: 1, minWidth: "22%", backgroundColor: C.card, borderColor: C.border, borderWidth: 1, borderRadius: 10, padding: 10, alignItems: "center" },
   resumoValor: { color: C.greenClaro, fontSize: 15, fontWeight: "800" },
