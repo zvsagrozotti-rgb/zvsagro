@@ -36,6 +36,9 @@ export default function CuponsScreen({ navigation }) {
       <TouchableOpacity style={s.novo} onPress={() => navigation.navigate("CupomForm", {})}>
         <Text style={s.novoTxt}>📷  Novo cupom</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={s.relBtn} onPress={() => navigation.navigate("RelatorioFuncionarios")}>
+        <Text style={s.relTxt}>📊  Relatório de receitas e despesas</Text>
+      </TouchableOpacity>
 
       {lista && lista.length > 0 ? (
         <View style={s.total}>
@@ -65,6 +68,8 @@ export default function CuponsScreen({ navigation }) {
 const s = StyleSheet.create({
   novo: { backgroundColor: C.green, borderRadius: 12, paddingVertical: 16, alignItems: "center", marginBottom: 16 },
   novoTxt: { color: "#06210b", fontSize: 17, fontWeight: "800" },
+  relBtn: { backgroundColor: C.card, borderColor: C.line, borderWidth: 1.5, borderRadius: 12, paddingVertical: 13, alignItems: "center", marginTop: -6, marginBottom: 16 },
+  relTxt: { color: C.text, fontSize: 14, fontWeight: "800" },
   total: { backgroundColor: C.card, borderColor: C.border, borderWidth: 1, borderRadius: 12, padding: 16, marginBottom: 18 },
   totalLbl: { color: C.mut, fontSize: 12, fontWeight: "700" },
   totalVal: { fontSize: 26, fontWeight: "800", marginTop: 4 },
