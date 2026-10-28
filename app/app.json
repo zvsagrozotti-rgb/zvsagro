@@ -2,7 +2,7 @@
   "expo": {
     "name": "FrotaFácil",
     "slug": "vzsagro",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -10,12 +10,20 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.wftavares.vzsagro",
+      "package": "com.wftavares.frotafacil",
       "versionCode": 1,
+      "allowBackup": false,
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
       "adaptiveIcon": {
-        "backgroundColor": "#000000",
+        "backgroundColor": "#051520",
         "foregroundImage": "./assets/android-icon-foreground.png"
-      }
+      },
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -26,8 +34,14 @@
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",
-          "backgroundColor": "#16A34A",
+          "backgroundColor": "#051520",
           "imageWidth": 240
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "O FrotaFácil usa a câmera para fotografar o cupom fiscal e preencher os dados. A foto é lida no próprio aparelho."
         }
       ]
     ]
