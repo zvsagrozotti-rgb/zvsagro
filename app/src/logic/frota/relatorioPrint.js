@@ -84,7 +84,7 @@ function montarHtml({ periodoLabel, linhas, veiculosComparados, consumoMedio, di
     ${linhasAbastecimentos}
   </table>
 
-  <div class="foot">Relatório gerado pelo VZS Agro · ${dataBR(new Date().toISOString().split("T")[0])}</div>
+  <div class="foot">Relatório gerado pelo FrotaFácil · ${dataBR(new Date().toISOString().split("T")[0])}</div>
 </body></html>`;
 }
 
