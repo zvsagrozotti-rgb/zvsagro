@@ -22,9 +22,9 @@ export async function exportarMeusDados() {
     total += (itens || []).length;
   }
 
-  const pacote = { app: "VZS Agro", tipo: "backup", versao: 1, em: new Date().toISOString(), dados };
+  const pacote = { app: "FrotaFácil", tipo: "backup", versao: 1, em: new Date().toISOString(), dados };
   const json = JSON.stringify(pacote);
-  const nome = "vzsagro-backup-" + hojeArquivo() + ".json";
+  const nome = "frotafacil-backup-" + hojeArquivo() + ".json";
 
   if (Platform.OS === "web") {
     const blob = new Blob([json], { type: "application/json" });
@@ -36,7 +36,7 @@ export async function exportarMeusDados() {
     const path = FileSystem.cacheDirectory + nome;
     await FileSystem.writeAsStringAsync(path, json, { encoding: FileSystem.EncodingType.UTF8 });
     if (await Sharing.isAvailableAsync()) {
-      try { await Sharing.shareAsync(path, { mimeType: "*/*", dialogTitle: "Backup VZS Agro" }); }
+      try { await Sharing.shareAsync(path, { mimeType: "*/*", dialogTitle: "Backup FrotaFácil" }); }
       catch (e) { /* arquivo já está salvo, só o compartilhar falhou */ }
     }
   }

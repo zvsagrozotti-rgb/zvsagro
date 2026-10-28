@@ -14,6 +14,16 @@ export const ENTIDADES = {
       { key: "odometroInicial", label: "Odômetro inicial (km)", tipo: "number" },
     ],
   },
+  funcionarios: {
+    titulo: "Funcionários", singular: "Funcionário", icon: "👷", label: (i) => i.nome,
+    sub: (i) => [i.funcao, i.documento].filter(Boolean).join(" · "),
+    campos: [
+      { key: "nome", label: "Nome", tipo: "text", req: true },
+      { key: "funcao", label: "Função", tipo: "text" },
+      { key: "documento", label: "CPF", tipo: "text" },
+      { key: "contato", label: "Contato", tipo: "text" },
+    ],
+  },
   clientes: {
     titulo: "Pessoas", singular: "Pessoa", icon: "🧑‍🌾", label: (i) => i.nome,
     sub: (i) => [i.tipo || "Cliente", i.documento, i.cidade, i.contato].filter(Boolean).join(" · "),
@@ -33,4 +43,4 @@ export const ENTIDADES = {
   },
 };
 
-export const ORDEM_CADASTRO = ["clientes"];
+export const ORDEM_CADASTRO = ["funcionarios", "clientes"];
