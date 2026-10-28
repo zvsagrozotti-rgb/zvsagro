@@ -3,10 +3,13 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native
 import { useFocusEffect } from "@react-navigation/native";
 import { listar, assinar } from "../logic/store";
 import { ENTIDADES } from "../logic/entidades";
+import { souAdministrador } from "../logic/cupons";
 import { C } from "../theme";
 
 export default function FrotaScreen({ navigation }) {
   const [veiculos, setVeiculos] = useState([]);
+  const [admin, setAdmin] = useState(false);
+  React.useEffect(() => { souAdministrador().then(setAdmin); }, []);
 
   const carregar = useCallback(() => { listar("veiculos").then(setVeiculos); }, []);
   useFocusEffect(carregar);
@@ -20,13 +23,15 @@ export default function FrotaScreen({ navigation }) {
           <TouchableOpacity onPress={() => navigation.navigate("RelatorioAbastecimentos")} style={{ paddingHorizontal: 10 }}>
             <Text style={{ fontSize: 20 }}>📊</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("VeiculoForm")} style={s.add}>
-            <Text style={s.addTxt}>＋</Text>
-          </TouchableOpacity>
+          {admin ? (
+            <TouchableOpacity onPress={() => navigation.navigate("VeiculoForm")} style={s.add}>
+              <Text style={s.addTxt}>＋</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       ),
     });
-  }, [navigation]);
+  }, [navigation, admin]);
 
   const cfg = ENTIDADES.veiculos;
 

@@ -4,6 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { assinar } from "../logic/store";
 import { listarAbastecimentos, calcularLinhas, calcularEstatisticas } from "../logic/frota/abastecimentos";
 import { fmt, fmtMoeda } from "../logic/fmt";
+import { souAdministrador } from "../logic/cupons";
 import { C } from "../theme";
 
 function dataBR(iso) {
@@ -15,6 +16,8 @@ function dataBR(iso) {
 export default function VeiculoDetailScreen({ route, navigation }) {
   const { veiculo } = route.params;
   const [linhas, setLinhas] = useState([]);
+  const [admin, setAdmin] = useState(false);
+  React.useEffect(() => { souAdministrador().then(setAdmin); }, []);
 
   const carregar = useCallback(() => {
     listarAbastecimentos(veiculo.id).then((abs) => setLinhas(calcularLinhas(abs)));
@@ -25,13 +28,13 @@ export default function VeiculoDetailScreen({ route, navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: veiculo.apelido || veiculo.placa || "Veículo",
-      headerRight: () => (
+      headerRight: () => admin ? (
         <TouchableOpacity onPress={() => navigation.navigate("VeiculoForm", { item: veiculo })} style={{ paddingHorizontal: 14 }}>
           <Text style={{ color: C.text, fontSize: 18 }}>✏️</Text>
         </TouchableOpacity>
-      ),
+      ) : null,
     });
-  }, [navigation, veiculo]);
+  }, [navigation, veiculo, admin]);
 
   const { geral, ultimos, ultimosX } = calcularEstatisticas(linhas, 5);
   const ordenadas = [...linhas].reverse(); // mais recente primeiro
@@ -57,7 +60,7 @@ export default function VeiculoDetailScreen({ route, navigation }) {
         }
         ListEmptyComponent={<Text style={s.vazio}>Nenhum abastecimento registrado.{"\n"}Toque em ＋ para adicionar.</Text>}
         renderItem={({ item }) => (
-          <TouchableOpacity style={s.row} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa, item })}>
+          <TouchableOpacity style={s.row} disabled={!admin} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa, item })}>
             <View style={{ flex: 1 }}>
               <Text style={s.rowData}>{dataBR(item.data)} · {fmt(item.odometro, 0)} km</Text>
               <Text style={s.rowSub}>
@@ -70,13 +73,15 @@ export default function VeiculoDetailScreen({ route, navigation }) {
                 </Text>
               ) : null}
             </View>
-            <Text style={s.chev}>›</Text>
+            {admin ? <Text style={s.chev}>›</Text> : null}
           </TouchableOpacity>
         )}
       />
-      <TouchableOpacity style={s.fab} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa })}>
-        <Text style={s.fabTxt}>＋ Abastecimento</Text>
-      </TouchableOpacity>
+      {admin ? (
+        <TouchableOpacity style={s.fab} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa })}>
+          <Text style={s.fabTxt}>＋ Abastecimento</Text>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }

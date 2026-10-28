@@ -3,6 +3,7 @@ import { ScrollView, View, Text, Image, TouchableOpacity, StyleSheet } from "rea
 import { useFocusEffect } from "@react-navigation/native";
 import { lerEmpresa } from "../logic/empresa";
 import { precisaBackup } from "../logic/backup";
+import { souAdministrador } from "../logic/cupons";
 import { C } from "../theme";
 
 const ITENS = [
@@ -15,8 +16,10 @@ const ITENS = [
 export default function HomeScreen({ navigation }) {
   const [empresa, setEmpresa] = useState(null);
   const [lembrarBk, setLembrarBk] = useState(false);
+  const [admin, setAdmin] = useState(false);
   useFocusEffect(useCallback(() => {
     lerEmpresa().then(setEmpresa);
+    souAdministrador().then(setAdmin);
     precisaBackup().then(setLembrarBk).catch(() => {});
   }, []));
 
@@ -41,7 +44,7 @@ export default function HomeScreen({ navigation }) {
       ) : null}
 
       <View style={s.grid}>
-        {ITENS.map((it, i) => (
+        {ITENS.filter((it) => admin || it.tela === "Frota" || it.tela === "Cupons").map((it, i) => (
           <TouchableOpacity key={i} style={s.card}
             onPress={() => it.ok ? navigation.navigate(it.tela) : navigation.navigate("EmBreve", { titulo: it.titulo })}>
             <Text style={s.icon}>{it.icon}</Text>
