@@ -33,3 +33,29 @@ export function gastoPorFuncionario(cupons, de, ate) {
   }
   return m;
 }
+
+// Relatório por funcionário: receitas (adiantamentos) e despesas (cupons), abertos e já fechados.
+// funcionarioId = null -> todos. prefixo = "AAAA", "AAAA-MM" ou "AAAA-MM-DD" (null = todo o histórico).
+export function relatorioFuncionarios(funcionarios, creditos, cupons, { funcionarioId = null, prefixo = null } = {}) {
+  const noPeriodo = (d) => !prefixo || String(d || "").startsWith(prefixo);
+  const alvo = (funcionarios || []).filter((f) => !funcionarioId || f.id === funcionarioId);
+  const porFuncionario = alvo.map((f) => {
+    const rec = (creditos || []).filter((c) => c.funcionarioId === f.id && noPeriodo(c.data));
+    const desp = (cupons || []).filter((c) => c.funcionarioId === f.id && noPeriodo(c.data));
+    const receitas = arred(rec.reduce((s, c) => s + n(c.valor), 0));
+    const despesas = arred(desp.reduce((s, c) => s + n(c.valor), 0));
+    const porTipo = {};
+    for (const p of desp) porTipo[p.tipo || "Outros"] = arred((porTipo[p.tipo || "Outros"] || 0) + n(p.valor));
+    const movimentos = [
+      ...rec.map((c) => ({ id: c.id, data: c.data, kind: "receita", valor: n(c.valor), titulo: c.descricao || "Adiantamento", tipo: "Receita", fechado: !!c.fechadoEm })),
+      ...desp.map((c) => ({ id: c.id, data: c.data, kind: "despesa", valor: n(c.valor), titulo: c.estabelecimento || c.tipo || "Cupom", tipo: c.tipo || "Outros", fechado: !!c.fechadoEm })),
+    ].sort((a, b) => String(b.data || "").localeCompare(String(a.data || "")));
+    return { funcionario: f, receitas, despesas, resultado: arred(receitas - despesas), porTipo, movimentos };
+  });
+  const totais = {
+    receitas: arred(porFuncionario.reduce((s, x) => s + x.receitas, 0)),
+    despesas: arred(porFuncionario.reduce((s, x) => s + x.despesas, 0)),
+  };
+  totais.resultado = arred(totais.receitas - totais.despesas);
+  return { porFuncionario, totais };
+}
