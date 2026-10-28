@@ -10,6 +10,7 @@ const ITENS = [
   { icon: "⛽", titulo: "Frota", sub: "Veículos, abastecimentos e consumo", tela: "Frota", ok: true },
   { icon: "📋", titulo: "Cadastros", sub: "Funcionários e pessoas", tela: "Cadastros", ok: true },
   { icon: "🏢", titulo: "Minha Empresa", sub: "Logo, CNPJ, contato", tela: "MinhaEmpresa", ok: true },
+  { icon: "📊", titulo: "Relatório", sub: "Receitas e despesas por funcionário", tela: "RelatorioFuncionarios", ok: true },
   { icon: "🧾", titulo: "Cupons e Saldos", sub: "Foto do cupom, adiantamento por funcionário", tela: "Cupons", ok: true },
 ];
 
@@ -44,7 +45,7 @@ export default function HomeScreen({ navigation }) {
       ) : null}
 
       <View style={s.grid}>
-        {ITENS.filter((it) => admin || it.tela === "Frota" || it.tela === "Cupons").map((it, i) => (
+        {ITENS.filter((it) => admin || it.tela === "Frota" || it.tela === "Cupons" || it.tela === "RelatorioFuncionarios").map((it, i) => (
           <TouchableOpacity key={i} style={s.card}
             onPress={() => it.ok ? navigation.navigate(it.tela) : navigation.navigate("EmBreve", { titulo: it.titulo })}>
             <Text style={s.icon}>{it.icon}</Text>

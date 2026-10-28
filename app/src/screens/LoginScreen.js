@@ -4,6 +4,8 @@ import { entrar as entrarOnline, cadastrar, recuperarSenha } from "../logic/auth
 import MarcaFrotaFacil from "../components/MarcaFrotaFacil";
 import { C } from "../theme";
 
+const LOGO = require("../../assets/logo.png");
+
 export default function LoginScreen({ empresa }) {
   const [modo, setModo] = useState("entrar"); // "entrar" | "cadastrar"
   const [email, setEmail] = useState("");
@@ -38,7 +40,7 @@ export default function LoginScreen({ empresa }) {
   return (
     <KeyboardAvoidingView style={s.wrap} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <View style={s.box}>
-        {logo ? <Image source={{ uri: logo }} style={s.logo} resizeMode="contain" /> : null}
+        {logo ? <Image source={{ uri: logo }} style={s.logo} resizeMode="contain" /> : <Image source={LOGO} style={s.appIcon} resizeMode="contain" />}
         {empresa && empresa.nome ? <Text style={s.nome}>{empresa.nome}</Text> : <MarcaFrotaFacil style={s.nome} />}
         <Text style={s.sub}>{modo === "entrar" ? "Acesse com seu e-mail e senha" : "Crie sua conta"}</Text>
 
@@ -79,7 +81,7 @@ const s = StyleSheet.create({
   wrap: { flex: 1, backgroundColor: C.bg, justifyContent: "center", padding: 22 },
   box: { backgroundColor: C.card, borderColor: C.border, borderWidth: 1, borderRadius: 16, padding: 22 },
   logo: { height: 64, width: 180, alignSelf: "center", marginBottom: 8 },
-  appIcon: { width: 92, height: 92, alignSelf: "center", marginBottom: 8, borderRadius: 20 },
+  appIcon: { width: 132, height: 132, alignSelf: "center", marginBottom: 4 },
   nome: { color: C.text, fontSize: 22, fontWeight: "800", textAlign: "center" },
   sub: { color: C.mut, fontSize: 13, textAlign: "center", marginTop: 4, marginBottom: 16 },
   label: { color: "#A9C9B4", fontSize: 11, fontWeight: "700", marginBottom: 5, marginTop: 8, textTransform: "uppercase" },
