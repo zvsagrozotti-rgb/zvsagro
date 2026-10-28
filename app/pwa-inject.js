@@ -18,7 +18,7 @@ const head = `
     <meta name="mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-    <meta name="apple-mobile-web-app-title" content="VZS Agro"/>
+    <meta name="apple-mobile-web-app-title" content="FrotaFácil"/>
     <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"/>
     <style>html,body{background:#0B1D13} @supports(padding:max(0px)){body{background:#0B1D13}}</style>`;
