@@ -50,6 +50,11 @@ export default function CupomFormScreen({ route, navigation }) {
   }, []);
 
   const combustivel = tipo === "Combustível";
+  const veiculosDoFunc = veiculos.filter((v) => funcionarioId && v.usoAtualFuncionarioId === funcionarioId);
+  // Funcionário com um único veículo vinculado: já vem escolhido.
+  useEffect(() => {
+    if (combustivel && !veiculoId && veiculosDoFunc.length === 1) setVeiculoId(veiculosDoFunc[0].id);
+  }, [combustivel, funcionarioId, veiculos]);
   const nomeFunc = (funcionarios.find((f) => f.id === funcionarioId) || {}).nome;
   const nomeVeic = (() => { const v = veiculos.find((x) => x.id === veiculoId); return v ? (v.apelido || v.placa) : null; })();
 
@@ -90,7 +95,7 @@ export default function CupomFormScreen({ route, navigation }) {
       const preco = num(precoLitro) > 0 ? num(precoLitro) : (l > 0 ? Math.round((v / l) * 1000) / 1000 : "");
       await salvarCupom({
         ...(cupom ? { id: cupom.id } : {}),
-        funcionarioId, tipo, estabelecimento: estabelecimento.trim(), cnpj: cnpj.trim(), data, valor: v, observacao: observacao.trim(),
+        funcionarioId, funcionarioNome: nomeFunc || "", tipo, estabelecimento: estabelecimento.trim(), cnpj: cnpj.trim(), data, valor: v, observacao: observacao.trim(),
         ...(combustivel ? { veiculoId, odometro: odometro.replace(",", "."), litros: l, precoLitro: preco } : { veiculoId: null, odometro: "", litros: "", precoLitro: "" }),
       }, foto);
       navigation.goBack();
@@ -165,7 +170,7 @@ export default function CupomFormScreen({ route, navigation }) {
         itens={(admin ? funcionarios : (meu ? [meu] : [])).map((f) => ({ id: f.id, label: f.nome, sub: f.funcao }))}
         onSelect={(i) => { setFuncionarioId(i.id); setPicker(null); }} onClose={() => setPicker(null)} />
       <PickerModal visible={picker === "veic"} titulo="Veículo" vazioMsg="Cadastre o veículo na Frota."
-        itens={veiculos.map((v) => ({ id: v.id, label: v.apelido || v.placa || "(sem nome)", sub: [v.placa, v.modelo].filter(Boolean).join(" · ") }))}
+        itens={[...veiculosDoFunc, ...veiculos.filter((v) => !veiculosDoFunc.includes(v))].map((v) => ({ id: v.id, label: v.apelido || v.placa || "(sem nome)", sub: [veiculosDoFunc.includes(v) ? "Em uso por ele" : (v.usoAtualNome ? "Com: " + v.usoAtualNome : ""), v.placa, v.modelo].filter(Boolean).join(" · ") }))}
         onSelect={(i) => { setVeiculoId(i.id); setPicker(null); }} onClose={() => setPicker(null)} />
     </ScrollView>
   );
