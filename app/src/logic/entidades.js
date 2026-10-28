@@ -22,6 +22,7 @@ export const ENTIDADES = {
       { key: "funcao", label: "Função", tipo: "text" },
       { key: "documento", label: "CPF", tipo: "text" },
       { key: "contato", label: "Contato", tipo: "text" },
+      { key: "email", label: "E-mail de login (se usa o app para lançar cupons)", tipo: "text" },
     ],
   },
   clientes: {

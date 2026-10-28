@@ -5,6 +5,7 @@ import { Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { listar, salvar, remover } from "./store";
+import { supabase } from "./supabaseClient";
 import { textoDaImagem } from "./cupomOcr";
 import { lerCupomFrotaFacil } from "./leitorFrota";
 import { minhaEmpresa } from "./empresaOnline";
@@ -18,7 +19,17 @@ export const listarCupons = () => listar("cupons");
 export const listarCreditos = () => listar("adiantamentos");
 
 export async function souAdministrador() {
-  try { const e = await minhaEmpresa(); return !e || e.papel === "administrador"; } catch (e) { return true; }
+  try { const e = await minhaEmpresa(); return !e || e.papel === "dono" || e.papel === "administrador"; } catch (e) { return true; }
+}
+
+// Funcionário cadastrado com o e-mail de login de quem está usando o app (null se não houver).
+export async function meuFuncionario(funcionarios) {
+  try {
+    const { data } = await supabase.auth.getUser();
+    const email = String((data && data.user && data.user.email) || "").trim().toLowerCase();
+    if (!email) return null;
+    return (funcionarios || []).find((f) => String(f.email || "").trim().toLowerCase() === email) || null;
+  } catch (e) { return null; }
 }
 
 export async function carregarTudo() {
