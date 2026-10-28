@@ -5,7 +5,8 @@ import { Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { listar, salvar, remover } from "./store";
-import { supabase } from "./supabaseClient";
+import { textoDaImagem } from "./cupomOcr";
+import { lerCupomFrotaFacil } from "./leitorFrota";
 import { minhaEmpresa } from "./empresaOnline";
 import { resumoFuncionario, idsParaFechar } from "./saldo";
 import { salvarAbastecimento, removerAbastecimento } from "./frota/abastecimentos";
@@ -54,12 +55,10 @@ export async function lerFoto(cupomId) {
   return f ? f.dados : null;
 }
 
-// ---- leitura automática (função "ler-cupom" no Supabase, usa IA) ----
-export async function lerCupomPorIA(base64) {
-  const { data, error } = await supabase.functions.invoke("ler-cupom", { body: { imagem: base64 } });
-  if (error) throw new Error("Leitura automática indisponível agora. Preencha os dados à mão.");
-  if (data && data.erro) throw new Error(data.erro);
-  return data;
+// ---- leitura automática (OCR no próprio aparelho, sem chave nem custo) ----
+export async function lerCupomDaFoto(base64) {
+  const texto = await textoDaImagem(base64);
+  return lerCupomFrotaFacil(texto);
 }
 
 // ---- cupom ----
