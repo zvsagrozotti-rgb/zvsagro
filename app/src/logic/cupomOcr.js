@@ -1,6 +1,6 @@
 // OCR do cupom no próprio aparelho (sem chave, sem custo, a foto não sai do aparelho).
-// Usa o Tesseract (tesseract.js), carregado do CDN na primeira leitura e guardado em cache pelo navegador.
-// Só na versão web/PWA. No app nativo ainda não há OCR: a tela pede o preenchimento à mão.
+//  - Web/PWA: Tesseract (tesseract.js), baixado do CDN na primeira leitura e guardado em cache pelo navegador.
+//  - Android/iOS: Google ML Kit / Apple Vision, via expo-text-extractor (já embutido no app, funciona sem internet).
 import { Platform } from "react-native";
 
 const SCRIPT = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
@@ -20,14 +20,36 @@ function carregarTesseract() {
   return carregando;
 }
 
-export function ocrDisponivel() { return Platform.OS === "web"; }
+function moduloNativo() {
+  if (Platform.OS === "web") return null;
+  try { return require("expo-text-extractor"); } catch (e) { return null; }
+}
 
-// base64 de um JPEG -> texto reconhecido (português). Lança erro com mensagem clara se não der.
+export function ocrDisponivel() {
+  if (Platform.OS === "web") return true;
+  const m = moduloNativo();
+  return !!(m && m.isSupported);
+}
+
+const VAZIO = "Não achei texto na foto. Tire de novo com mais luz, com o cupom esticado e de frente.";
+
+// base64 de um JPEG -> texto reconhecido. Lança erro com mensagem clara se não der.
 export async function textoDaImagem(base64) {
-  if (!ocrDisponivel()) throw new Error("A leitura automática por foto funciona na versão web. Preencha os dados à mão.");
-  const T = await carregarTesseract();
-  const r = await T.recognize("data:image/jpeg;base64," + base64, "por");
-  const texto = String((r && r.data && r.data.text) || "").trim();
-  if (!texto) throw new Error("Não achei texto na foto. Tire de novo com mais luz, com o cupom esticado e de frente.");
+  if (Platform.OS === "web") {
+    const T = await carregarTesseract();
+    const r = await T.recognize("data:image/jpeg;base64," + base64, "por");
+    const texto = String((r && r.data && r.data.text) || "").trim();
+    if (!texto) throw new Error(VAZIO);
+    return texto;
+  }
+  const m = moduloNativo();
+  if (!m || !m.isSupported) throw new Error("Este aparelho não consegue ler texto de fotos. Preencha os dados à mão.");
+  // O leitor nativo trabalha com arquivo: grava a foto no cache e lê.
+  const FileSystem = require("expo-file-system");
+  const uri = FileSystem.cacheDirectory + "cupom-ocr.jpg";
+  await FileSystem.writeAsStringAsync(uri, base64, { encoding: FileSystem.EncodingType.Base64 });
+  const linhas = await m.extractTextFromImage(uri);
+  const texto = (linhas || []).join("\n").trim();
+  if (!texto) throw new Error(VAZIO);
   return texto;
 }

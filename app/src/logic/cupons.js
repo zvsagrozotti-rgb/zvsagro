@@ -84,7 +84,7 @@ export async function salvarCupom(dados, fotoBase64) {
       ...(abastecimentoId ? { id: abastecimentoId } : {}),
       data: dados.data, odometro: String(dados.odometro ?? "").replace(",", "."),
       volume: String(dados.litros ?? "").replace(",", "."), precoLitro: String(dados.precoLitro ?? "").replace(",", "."),
-      completou: true, origemCupom: true, funcionarioId: dados.funcionarioId,
+      completou: true, origemCupom: true, funcionarioId: dados.funcionarioId, funcionarioNome: dados.funcionarioNome,
     });
     abastecimentoId = ab.id;
   } else if (abastecimentoId) {

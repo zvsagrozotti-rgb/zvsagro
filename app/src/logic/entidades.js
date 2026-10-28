@@ -5,7 +5,7 @@ export const TIPOS_COMBUSTIVEL = ["Diesel S10", "Diesel S500", "Gasolina", "Etan
 export const ENTIDADES = {
   veiculos: {
     titulo: "Veículos", singular: "Veículo", icon: "🚗", label: (i) => i.apelido || i.placa || "(sem nome)",
-    sub: (i) => [i.placa, i.modelo, i.tipoCombustivel].filter(Boolean).join(" · "),
+    sub: (i) => [i.placa, i.modelo, i.tipoCombustivel, i.usoAtualNome ? "Com: " + i.usoAtualNome : ""].filter(Boolean).join(" · "),
     campos: [
       { key: "apelido", label: "Apelido / Nome", tipo: "text", req: true },
       { key: "placa", label: "Placa", tipo: "text" },
