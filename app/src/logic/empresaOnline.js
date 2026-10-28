@@ -93,6 +93,13 @@ export async function removerMembro(userId) {
   return { ok: true };
 }
 
+// Só o dono pode chamar (o banco garante isso). papel: "dono" ou "membro".
+export async function definirPapel(userId, papel) {
+  const { error } = await supabase.rpc("definir_papel", { p_user_id: userId, p_papel: papel });
+  if (error) return { ok: false, erro: traduzErro(error) };
+  return { ok: true };
+}
+
 function traduzErro(error) {
   const msg = error?.message || "";
   if (msg.includes("duplicate key")) return "Esse e-mail já foi convidado.";
