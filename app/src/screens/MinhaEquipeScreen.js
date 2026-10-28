@@ -19,7 +19,7 @@ export default function MinhaEquipeScreen() {
     const e = await minhaEmpresa();
     setEmpresa(e);
     setMembros(await listarMembros());
-    if (e && e.papel === "dono") setPendentes(await convitesPendentes());
+    if (e && (e.papel === "dono" || e.papel === "administrador")) setPendentes(await convitesPendentes());
     setConvitesMeus(await convitesParaMim());
   }, []);
   useFocusEffect(useCallback(() => { carregar(); }, [carregar]));
@@ -54,7 +54,7 @@ export default function MinhaEquipeScreen() {
     });
   }
 
-  const souDono = empresa && empresa.papel === "dono";
+  const souDono = empresa && (empresa.papel === "dono" || empresa.papel === "administrador");
 
   return (
     <View style={{ flex: 1, backgroundColor: C.bg }}>
@@ -80,12 +80,12 @@ export default function MinhaEquipeScreen() {
 
             <View style={s.card}>
               <Text style={s.h}>Minha equipe{empresa?.nome ? " — " + empresa.nome : ""}</Text>
-              <Text style={s.mut}>Todos aqui veem e editam os mesmos cadastros, aplicações e dados financeiros.</Text>
+              <Text style={s.mut}>Todos aqui usam o mesmo sistema: o cupom que um funcionário lança aparece na hora para o dono. Cadastre o e-mail dele em Cadastros › Funcionários para o cupom ir direto no nome dele.</Text>
             </View>
 
             {souDono ? (
               <View style={s.card}>
-                <Text style={s.h}>Convidar colega</Text>
+                <Text style={s.h}>Convidar funcionário</Text>
                 <Text style={s.mut}>Convide antes mesmo dela ter conta — quando ela criar uma com esse e-mail, já entra direto na sua equipe.</Text>
                 <TextInput style={s.input} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address"
                   placeholder="email@da-pessoa.com" placeholderTextColor="#5f7d69" />

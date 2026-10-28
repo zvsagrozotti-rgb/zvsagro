@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from "react-native";
 import { listar } from "../logic/store";
-import { TIPOS_CUPOM, listarFuncionarios, salvarCupom, removerCupom, tirarFoto, lerFoto, lerCupomDaFoto } from "../logic/cupons";
+import { TIPOS_CUPOM, listarFuncionarios, souAdministrador, meuFuncionario, salvarCupom, removerCupom, tirarFoto, lerFoto, lerCupomDaFoto } from "../logic/cupons";
 import { num } from "../logic/fmt";
 import { confirmar, avisar } from "../logic/confirm";
 import PickerModal from "../components/PickerModal";
@@ -35,10 +35,16 @@ export default function CupomFormScreen({ route, navigation }) {
   const [lendo, setLendo] = useState(false);
   const [aviso, setAviso] = useState("");
   const [picker, setPicker] = useState(null);   // "func" | "veic"
+  const [admin, setAdmin] = useState(true);
+  const [meu, setMeu] = useState(null);         // funcionário ligado ao e-mail de quem está logado
 
   useLayoutEffect(() => { navigation.setOptions({ title: cupom ? "Editar cupom" : "Novo cupom" }); }, [navigation, cupom]);
   useEffect(() => {
-    listarFuncionarios().then(setFuncionarios);
+    listarFuncionarios().then(async (fs) => {
+      setFuncionarios(fs);
+      const a = await souAdministrador(); setAdmin(a);
+      if (!a) { const m = await meuFuncionario(fs); setMeu(m); if (m) setFuncionarioId(m.id); }
+    });
     listar("veiculos").then(setVeiculos);
     if (cupom) lerFoto(cupom.id).then(setFotoSalva).catch(() => {});
   }, []);
@@ -70,6 +76,7 @@ export default function CupomFormScreen({ route, navigation }) {
   }
 
   async function onSalvar() {
+    if (!admin && !meu) { avisar("Atenção", "Seu e-mail ainda não está no cadastro de funcionários. Peça ao administrador para cadastrar seu e-mail em Cadastros › Funcionários."); return; }
     if (!funcionarioId) { avisar("Atenção", "Escolha o funcionário."); return; }
     const v = num(valor);
     if (!(v > 0)) { avisar("Atenção", "Informe o valor total do cupom."); return; }
@@ -155,7 +162,7 @@ export default function CupomFormScreen({ route, navigation }) {
       <View style={{ height: 30 }} />
 
       <PickerModal visible={picker === "func"} titulo="Funcionário" vazioMsg="Cadastre em Cadastros › Funcionários."
-        itens={funcionarios.map((f) => ({ id: f.id, label: f.nome, sub: f.funcao }))}
+        itens={(admin ? funcionarios : (meu ? [meu] : [])).map((f) => ({ id: f.id, label: f.nome, sub: f.funcao }))}
         onSelect={(i) => { setFuncionarioId(i.id); setPicker(null); }} onClose={() => setPicker(null)} />
       <PickerModal visible={picker === "veic"} titulo="Veículo" vazioMsg="Cadastre o veículo na Frota."
         itens={veiculos.map((v) => ({ id: v.id, label: v.apelido || v.placa || "(sem nome)", sub: [v.placa, v.modelo].filter(Boolean).join(" · ") }))}

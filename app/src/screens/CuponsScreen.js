@@ -1,14 +1,33 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { resumos } from "../logic/cupons";
+import { resumos, souAdministrador, meuFuncionario, listarFuncionarios } from "../logic/cupons";
+import { assinar } from "../logic/store";
 import { fmtMoeda } from "../logic/fmt";
 import { C } from "../theme";
 
 // Tela inicial do módulo: um cartão por funcionário com o saldo do ciclo aberto.
 export default function CuponsScreen({ navigation }) {
   const [lista, setLista] = useState(null);
-  useFocusEffect(useCallback(() => { resumos().then(setLista).catch(() => setLista([])); }, []));
+  const [admin, setAdmin] = useState(true);
+  const [semCadastro, setSemCadastro] = useState(false);
+
+  // Administrador vê todos; funcionário vê só o próprio saldo (pelo e-mail de login cadastrado nele).
+  const carregar = useCallback(async () => {
+    try {
+      const a = await souAdministrador(); setAdmin(a);
+      let r = await resumos();
+      if (!a) {
+        const m = await meuFuncionario(await listarFuncionarios());
+        r = m ? r.filter((x) => x.funcionario.id === m.id) : [];
+        setSemCadastro(!m);
+      }
+      setLista(r);
+    } catch (e) { setLista([]); }
+  }, []);
+  useFocusEffect(useCallback(() => { carregar(); }, [carregar]));
+  // Cupom lançado por outro aparelho aparece aqui sozinho.
+  useEffect(() => { const a = assinar("cupons", carregar), b = assinar("adiantamentos", carregar); return () => { a(); b(); }; }, [carregar]);
 
   const totalSaldo = (lista || []).reduce((s, r) => s + r.saldo, 0);
 
@@ -20,14 +39,14 @@ export default function CuponsScreen({ navigation }) {
 
       {lista && lista.length > 0 ? (
         <View style={s.total}>
-          <Text style={s.totalLbl}>Saldo de todos os funcionários</Text>
+          <Text style={s.totalLbl}>{admin ? "Saldo de todos os funcionários" : "Meu saldo"}</Text>
           <Text style={[s.totalVal, { color: totalSaldo < 0 ? C.red : C.greenClaro }]}>{fmtMoeda(totalSaldo)}</Text>
         </View>
       ) : null}
 
       <Text style={s.secao}>Funcionários</Text>
       {lista && lista.length === 0 ? (
-        <Text style={s.vazio}>Nenhum funcionário cadastrado.{"\n"}Cadastre em Cadastros › Funcionários.</Text>
+        <Text style={s.vazio}>{admin ? "Nenhum funcionário cadastrado.\nCadastre em Cadastros › Funcionários." : "Seu e-mail ainda não está no cadastro de funcionários.\nPeça ao administrador para cadastrar."}</Text>
       ) : null}
       {(lista || []).map((r) => (
         <TouchableOpacity key={r.funcionario.id} style={s.card} onPress={() => navigation.navigate("FuncionarioSaldo", { funcionarioId: r.funcionario.id })}>

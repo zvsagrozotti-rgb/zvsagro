@@ -7,6 +7,7 @@ import { C } from "../theme";
 
 const ITENS = [
   { icon: "⛽", titulo: "Frota", sub: "Veículos, abastecimentos e consumo", tela: "Frota", ok: true },
+  { icon: "👥", titulo: "Minha Equipe", sub: "Convidar quem vai lançar cupons", tela: "MinhaEquipe", ok: true },
   { icon: "📋", titulo: "Cadastros", sub: "Funcionários e pessoas", tela: "Cadastros", ok: true },
   { icon: "🏢", titulo: "Minha Empresa", sub: "Logo, CNPJ, contato", tela: "MinhaEmpresa", ok: true },
   { icon: "🧾", titulo: "Cupons e Saldos", sub: "Foto do cupom, adiantamento por funcionário", tela: "Cupons", ok: true },
