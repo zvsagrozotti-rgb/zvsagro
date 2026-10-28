@@ -70,7 +70,7 @@ export default function ContaScreen({ navigation }) {
         <Text style={s.excluirTxt}>{excluindo ? "Excluindo…" : "🗑 Excluir minha conta"}</Text>
       </TouchableOpacity>
 
-      <Text style={s.versao}>VZS Agro · versão {appJson.expo.version} (build {appJson.expo.android?.versionCode ?? "?"})</Text>
+      <Text style={s.versao}>FrotaFácil · versão {appJson.expo.version} (build {appJson.expo.android?.versionCode ?? "?"})</Text>
       <View style={{ height: 30 }} />
     </ScrollView>
   );

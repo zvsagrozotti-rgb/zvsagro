@@ -7,9 +7,9 @@ import { C } from "../theme";
 
 const ITENS = [
   { icon: "⛽", titulo: "Frota", sub: "Veículos, abastecimentos e consumo", tela: "Frota", ok: true },
-  { icon: "📋", titulo: "Cadastros", sub: "Pessoas (clientes e fornecedores)", tela: "Cadastros", ok: true },
+  { icon: "📋", titulo: "Cadastros", sub: "Funcionários e pessoas", tela: "Cadastros", ok: true },
   { icon: "🏢", titulo: "Minha Empresa", sub: "Logo, CNPJ, contato", tela: "MinhaEmpresa", ok: true },
-  { icon: "💵", titulo: "Financeiro", sub: "Contas, receitas, despesas, cartões…", tela: "Financeiro", ok: true },
+  { icon: "🧾", titulo: "Cupons e Saldos", sub: "Foto do cupom, adiantamento por funcionário", tela: "Cupons", ok: true },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -26,7 +26,7 @@ export default function HomeScreen({ navigation }) {
         {empresa && empresa.logo ? (
           <Image source={{ uri: empresa.logo }} style={s.logo} resizeMode="contain" />
         ) : (
-          <Text style={{ fontSize: 30 }}>🚁</Text>
+          <Text style={{ fontSize: 30 }}>🚚</Text>
         )}
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={s.h1} numberOfLines={1}>{(empresa && empresa.nome) || "Sua Empresa"}</Text>
@@ -52,7 +52,7 @@ export default function HomeScreen({ navigation }) {
         ))}
       </View>
 
-      <Text style={s.foot}>VZS Agro · Soluções Integradas{"\n"}Todos os direitos reservados.</Text>
+      <Text style={s.foot}>FrotaFácil{"\n"}Todos os direitos reservados.</Text>
     </ScrollView>
   );
 }

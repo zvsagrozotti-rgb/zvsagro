@@ -9,7 +9,7 @@ import { avisar } from "../logic/confirm";
 import { C } from "../theme";
 
 const CAMPOS = [
-  { key: "nome", label: "Nome da empresa", ph: "Ex.: VZS Agro Soluções Integradas" },
+  { key: "nome", label: "Nome da empresa", ph: "Ex.: Minha Empresa Ltda" },
   { key: "slogan", label: "Slogan", ph: "Ex.: Soluções Integradas" },
   { key: "agronomo", label: "Responsável", ph: "Nome do responsável" },
   { key: "documento", label: "CPF / CNPJ", ph: "00.000.000/0000-00" },

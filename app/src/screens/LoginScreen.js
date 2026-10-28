@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Image } from "react-native";
 import { entrar as entrarOnline, cadastrar, recuperarSenha } from "../logic/authOnline";
-import MarcaVZSAgro from "../components/MarcaVZSAgro";
+import MarcaFrotaFacil from "../components/MarcaFrotaFacil";
 import { C } from "../theme";
-
-const APP_ICON = require("../../assets/icon.png");
 
 export default function LoginScreen({ empresa }) {
   const [modo, setModo] = useState("entrar"); // "entrar" | "cadastrar"
@@ -40,9 +38,8 @@ export default function LoginScreen({ empresa }) {
   return (
     <KeyboardAvoidingView style={s.wrap} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <View style={s.box}>
-        {logo ? <Image source={{ uri: logo }} style={s.logo} resizeMode="contain" />
-              : <Image source={APP_ICON} style={s.appIcon} resizeMode="contain" />}
-        {empresa && empresa.nome ? <Text style={s.nome}>{empresa.nome}</Text> : <MarcaVZSAgro style={s.nome} />}
+        {logo ? <Image source={{ uri: logo }} style={s.logo} resizeMode="contain" /> : null}
+        {empresa && empresa.nome ? <Text style={s.nome}>{empresa.nome}</Text> : <MarcaFrotaFacil style={s.nome} />}
         <Text style={s.sub}>{modo === "entrar" ? "Acesse com seu e-mail e senha" : "Crie sua conta"}</Text>
 
         <Text style={s.label}>E-mail</Text>
