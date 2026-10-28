@@ -1,9 +1,10 @@
 import React, { useState, useCallback } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { minhaEmpresa, listarMembros, convitesPendentes, convitesParaMim, convidar, aceitarConvite, removerMembro } from "../logic/empresaOnline";
+import { minhaEmpresa, listarMembros, convitesPendentes, convitesParaMim, convidar, aceitarConvite, removerMembro, definirPapel } from "../logic/empresaOnline";
 import { avisar, confirmar } from "../logic/confirm";
 import { AppCtx } from "../logic/appctx";
+import { supabase } from "../logic/supabaseClient";
 import { C } from "../theme";
 
 export default function MinhaEquipeScreen() {
@@ -14,6 +15,8 @@ export default function MinhaEquipeScreen() {
   const [convitesMeus, setConvitesMeus] = useState([]);
   const [email, setEmail] = useState("");
   const [ocupado, setOcupado] = useState(false);
+  const [meuId, setMeuId] = useState(null);
+  React.useEffect(() => { supabase.auth.getUser().then(({ data }) => setMeuId(data && data.user ? data.user.id : null)); }, []);
 
   const carregar = useCallback(async () => {
     const e = await minhaEmpresa();
@@ -41,6 +44,18 @@ export default function MinhaEquipeScreen() {
       if (!r.ok) { avisar("Erro", r.erro); return; }
       avisar("Pronto!", "Você agora faz parte dessa empresa.");
       await recarregar();
+      await carregar();
+    });
+  }
+
+  function trocarPapel(userId, emailAlvo, novoPapel) {
+    const msg = novoPapel === "dono"
+      ? "\"" + emailAlvo + "\" vai ver TUDO (saldos e cupons de todos), lançar adiantamentos, cadastrar veículos e gerenciar a equipe. Continuar?"
+      : "\"" + emailAlvo + "\" volta a ser membro: só vê o próprio saldo e lança os próprios cupons. Continuar?";
+    confirmar(novoPapel === "dono" ? "Tornar administrador" : "Tornar membro", msg, async () => {
+      const r = await definirPapel(userId, novoPapel);
+      if (!r.ok) { avisar("Erro", r.erro); return; }
+      avisar("Pronto", "O novo papel vale na próxima vez que a pessoa abrir o app (ela pode precisar sair e entrar de novo).");
       await carregar();
     });
   }
@@ -111,12 +126,19 @@ export default function MinhaEquipeScreen() {
           <View style={s.row}>
             <View style={{ flex: 1 }}>
               <Text style={s.nome}>{item.email}</Text>
-              <Text style={s.papel}>{item.papel === "dono" ? "👑 Dono" : "Membro"}</Text>
+              <Text style={s.papel}>{item.papel === "dono" || item.papel === "administrador" ? "👑 Administrador" : "Membro"}</Text>
             </View>
-            {souDono && item.papel !== "dono" ? (
-              <TouchableOpacity style={s.btnRemover} onPress={() => remover(item.user_id, item.email)}>
-                <Text style={s.btnRemoverTxt}>Remover</Text>
-              </TouchableOpacity>
+            {souDono && item.user_id !== meuId ? (
+              <View style={{ gap: 6, alignItems: "flex-end" }}>
+                <TouchableOpacity style={s.btnPapel} onPress={() => trocarPapel(item.user_id, item.email, item.papel === "membro" ? "dono" : "membro")}>
+                  <Text style={s.btnPapelTxt}>{item.papel === "membro" ? "Tornar administrador" : "Tornar membro"}</Text>
+                </TouchableOpacity>
+                {item.papel === "membro" ? (
+                  <TouchableOpacity style={s.btnRemover} onPress={() => remover(item.user_id, item.email)}>
+                    <Text style={s.btnRemoverTxt}>Remover</Text>
+                  </TouchableOpacity>
+                ) : null}
+              </View>
             ) : null}
           </View>
         )}
@@ -136,6 +158,8 @@ const s = StyleSheet.create({
   conviteRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: 6 },
   btnMini: { backgroundColor: C.green, borderRadius: 8, paddingVertical: 7, paddingHorizontal: 12 },
   btnMiniTxt: { color: "#06210b", fontSize: 12, fontWeight: "800" },
+  btnPapel: { borderColor: C.green, borderWidth: 1.5, borderRadius: 8, paddingVertical: 7, paddingHorizontal: 10 },
+  btnPapelTxt: { color: C.greenClaro, fontSize: 12, fontWeight: "800" },
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: C.card, borderColor: C.border, borderWidth: 1, borderRadius: 12, padding: 14, marginBottom: 10 },
   nome: { color: C.text, fontSize: 14, fontWeight: "700", flexShrink: 1 },
   papel: { color: C.mut, fontSize: 12, fontWeight: "700", marginTop: 2 },
