@@ -100,3 +100,21 @@ grant execute on function public.remover_membro(uuid) to authenticated;
 
 -- Quem já se cadastrou antes desta migração como 'administrador' vira 'dono'.
 update public.membros set papel = 'dono' where papel = 'administrador';
+
+-- Promover/rebaixar: só o dono troca o papel de alguém da própria empresa; a empresa nunca fica sem dono.
+create or replace function public.definir_papel(p_user_id uuid, p_papel text) returns void
+language plpgsql security definer set search_path = public as $$
+declare alvo_empresa uuid; donos int;
+begin
+  if not public.sou_dono() then raise exception 'Só o dono da empresa pode mudar papéis.'; end if;
+  if p_papel not in ('dono', 'membro') then raise exception 'Papel inválido.'; end if;
+  select empresa_id into alvo_empresa from public.membros where user_id = p_user_id;
+  if alvo_empresa is distinct from public.minha_empresa_id() then raise exception 'Essa pessoa não é da sua equipe.'; end if;
+  if p_papel = 'membro' then
+    select count(*) into donos from public.membros where empresa_id = alvo_empresa and papel in ('dono', 'administrador') and user_id <> p_user_id;
+    if donos = 0 then raise exception 'A empresa precisa ter pelo menos um dono.'; end if;
+  end if;
+  update public.membros set papel = p_papel where user_id = p_user_id;
+end;
+$$;
+grant execute on function public.definir_papel(uuid, text) to authenticated;
