@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ScrollView, View, Text, TextInput, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from "react-native";
 import { listar } from "../logic/store";
-import { TIPOS_CUPOM, listarFuncionarios, salvarCupom, removerCupom, tirarFoto, lerFoto, lerCupomPorIA } from "../logic/cupons";
+import { TIPOS_CUPOM, listarFuncionarios, salvarCupom, removerCupom, tirarFoto, lerFoto, lerCupomDaFoto } from "../logic/cupons";
 import { num } from "../logic/fmt";
 import { confirmar, avisar } from "../logic/confirm";
 import PickerModal from "../components/PickerModal";
@@ -53,7 +53,7 @@ export default function CupomFormScreen({ route, navigation }) {
       if (!b64) return;
       setFoto(b64); setAviso(""); setLendo(true);
       try {
-        const r = await lerCupomPorIA(b64);
+        const r = await lerCupomDaFoto(b64);
         if (r) {
           if (r.estabelecimento) setEstabelecimento(String(r.estabelecimento));
           if (r.cnpj) setCnpj(String(r.cnpj));
@@ -62,7 +62,7 @@ export default function CupomFormScreen({ route, navigation }) {
           if (r.tipo && TIPOS_CUPOM.includes(r.tipo)) setTipo(r.tipo);
           if (r.litros != null) setLitros(String(r.litros).replace(".", ","));
           if (r.preco_litro != null) setPrecoLitro(String(r.preco_litro).replace(".", ","));
-          setAviso("Dados preenchidos pela leitura do cupom. Confira antes de salvar.");
+          setAviso("Dados preenchidos pela leitura do cupom. Confira os valores antes de salvar.");
         }
       } catch (e) { setAviso(e.message || "Não consegui ler o cupom. Preencha os dados à mão."); }
       finally { setLendo(false); }
@@ -104,7 +104,7 @@ export default function CupomFormScreen({ route, navigation }) {
         <TouchableOpacity style={s.fotoBtn} onPress={() => pegarFoto(true)}><Text style={s.fotoBtnTxt}>📷 Tirar foto</Text></TouchableOpacity>
         <TouchableOpacity style={s.fotoBtn} onPress={() => pegarFoto(false)}><Text style={s.fotoBtnTxt}>🖼️ Da galeria</Text></TouchableOpacity>
       </View>
-      {lendo ? <View style={s.lendo}><ActivityIndicator color={C.greenClaro} /><Text style={s.lendoTxt}>Lendo o cupom…</Text></View> : null}
+      {lendo ? <View style={s.lendo}><ActivityIndicator color={C.greenClaro} /><Text style={s.lendoTxt}>Lendo o cupom… (na primeira vez pode levar até 30 segundos)</Text></View> : null}
       {aviso ? <Text style={s.aviso}>{aviso}</Text> : null}
       {imagem ? <Image source={{ uri: "data:image/jpeg;base64," + imagem }} style={s.foto} resizeMode="contain" /> : null}
 
