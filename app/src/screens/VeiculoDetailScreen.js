@@ -99,7 +99,7 @@ export default function VeiculoDetailScreen({ route, navigation }) {
             <Text style={s.subTitulo}>Histórico de abastecimentos</Text>
           </View>
         }
-        ListEmptyComponent={<Text style={s.vazio}>Nenhum abastecimento registrado.{"\n"}Toque em ＋ para adicionar.</Text>}
+        ListEmptyComponent={<Text style={s.vazio}>{admin ? "Nenhum abastecimento registrado.\nToque em ＋ para adicionar." : "Nenhum abastecimento registrado."}</Text>}
         renderItem={({ item }) => (
           <TouchableOpacity style={s.row} disabled={!admin} onPress={() => navigation.navigate("AbastecimentoForm", { veiculoId: veiculo.id, veiculoNome: veiculo.apelido || veiculo.placa, item })}>
             <View style={{ flex: 1 }}>

@@ -41,7 +41,7 @@ export default function FrotaScreen({ navigation }) {
         data={veiculos}
         keyExtractor={(i, idx) => i.id || String(idx)}
         contentContainerStyle={{ padding: 16 }}
-        ListEmptyComponent={<Text style={s.vazio}>Nenhum veículo cadastrado.{"\n"}Toque em ＋ para adicionar.</Text>}
+        ListEmptyComponent={<Text style={s.vazio}>{admin ? "Nenhum veículo cadastrado.\nToque em ＋ para adicionar." : "Nenhum veículo cadastrado ainda.\nPeça ao administrador para cadastrar os veículos."}</Text>}
         renderItem={({ item }) => (
           <TouchableOpacity style={s.row} onPress={() => navigation.navigate("VeiculoDetail", { veiculo: item })}>
             <Text style={s.icon}>{cfg.icon}</Text>
