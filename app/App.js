@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { View, Text, TouchableOpacity, Platform } from "react-native";
+import { View, Text, TouchableOpacity, Image, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
@@ -34,10 +34,12 @@ import RelatorioFuncionariosScreen from "./src/screens/RelatorioFuncionariosScre
 import MarcaFrotaFacil from "./src/components/MarcaFrotaFacil";
 
 const Stack = createNativeStackNavigator();
+const LOGO = require("./assets/logo.png");
 
 function TituloHome() {
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <Image source={LOGO} style={{ width: 30, height: 30 }} resizeMode="contain" />
       <MarcaFrotaFacil style={{ fontSize: 18, fontWeight: "800" }} />
     </View>
   );
