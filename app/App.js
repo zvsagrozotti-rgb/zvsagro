@@ -30,6 +30,7 @@ import CuponsScreen from "./src/screens/CuponsScreen";
 import FuncionarioSaldoScreen from "./src/screens/FuncionarioSaldoScreen";
 import CupomFormScreen from "./src/screens/CupomFormScreen";
 import AdiantamentoScreen from "./src/screens/AdiantamentoScreen";
+import RelatorioFuncionariosScreen from "./src/screens/RelatorioFuncionariosScreen";
 import MarcaFrotaFacil from "./src/components/MarcaFrotaFacil";
 
 const Stack = createNativeStackNavigator();
@@ -148,6 +149,7 @@ export default function App() {
               <Stack.Screen name="FuncionarioSaldo" component={FuncionarioSaldoScreen} />
               <Stack.Screen name="CupomForm" component={CupomFormScreen} />
               <Stack.Screen name="Adiantamento" component={AdiantamentoScreen} />
+              <Stack.Screen name="RelatorioFuncionarios" component={RelatorioFuncionariosScreen} options={{ title: "Receitas e despesas" }} />
             </Stack.Navigator>
             </NavigationContainer>
           </View>
