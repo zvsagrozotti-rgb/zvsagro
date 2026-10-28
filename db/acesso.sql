@@ -6,7 +6,7 @@
 --   - o próprio cadastro de funcionário;
 --   - os próprios cupons, fotos de cupom e abastecimentos gerados por cupom (lança e corrige; abastecimento leva funcionarioId);
 --   - os próprios adiantamentos (só leitura: quem lança saldo é o dono);
---   - leitura (só consulta) de veículos, abastecimentos de toda a frota e do perfil da empresa.
+--   - leitura (só consulta) de veículos, abastecimentos de toda a frota, histórico de uso dos veículos e perfil da empresa.
 
 -- id do funcionário ligado ao e-mail de quem está logado (null se não houver).
 create or replace function public.meu_funcionario_id() returns text
@@ -41,7 +41,7 @@ create policy "dono_tudo" on public.registros for all
 
 create policy "membro_le" on public.registros for select
   using (empresa_id = public.minha_empresa_id() and (
-    entidade in ('veiculos', 'abastecimentos', 'empresa_perfil')
+    entidade in ('veiculos', 'abastecimentos', 'usos', 'empresa_perfil')
     or (entidade = 'funcionarios' and id::text = public.meu_funcionario_id())
     or (entidade in ('cupons', 'adiantamentos') and dados ->> 'funcionarioId' = public.meu_funcionario_id())
     or (entidade = 'cupom_fotos' and public.cupom_e_meu(id))
