@@ -84,7 +84,7 @@ export async function salvarCupom(dados, fotoBase64) {
       ...(abastecimentoId ? { id: abastecimentoId } : {}),
       data: dados.data, odometro: String(dados.odometro ?? "").replace(",", "."),
       volume: String(dados.litros ?? "").replace(",", "."), precoLitro: String(dados.precoLitro ?? "").replace(",", "."),
-      completou: true, origemCupom: true,
+      completou: true, origemCupom: true, funcionarioId: dados.funcionarioId,
     });
     abastecimentoId = ab.id;
   } else if (abastecimentoId) {
@@ -97,9 +97,10 @@ export async function salvarCupom(dados, fotoBase64) {
 }
 
 export async function removerCupom(cupom) {
+  // Ordem importa: o banco só deixa o funcionário apagar a foto enquanto o cupom dele ainda existe.
+  try { await remover("cupom_fotos", cupom.id); } catch (e) {}
   if (cupom.abastecimentoId) await removerAbastecimento(cupom.abastecimentoId);
   await remover("cupons", cupom.id);
-  try { await remover("cupom_fotos", cupom.id); } catch (e) {}
 }
 
 // ---- adiantamento (receita) e fechamento ----
